@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/s1")
+@RequestMapping("/api/sort")
 public class Controller {
     @GetMapping("/hi")
     @ResponseStatus(HttpStatus.OK)
