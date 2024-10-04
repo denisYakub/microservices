@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/microservices.iml" filepath="$PROJECT_DIR$/.idea/microservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pullingDataService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/pullingDataService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sortingDataService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sortingDataService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vkService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/vkService.main.iml" />
     </modules>
   </component>
 </project>
