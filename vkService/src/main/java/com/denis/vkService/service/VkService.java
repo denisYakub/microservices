@@ -1,43 +1,56 @@
 package com.denis.vkService.service;
 
-import com.vk.api.sdk.client.TransportClient;
-import com.vk.api.sdk.client.VkApiClient;
-import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.UserAuthResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
-//@Service
+@Service
 public class VkService {
+    private final String ACCESS_KEY = "656097086560970865609708b8667f2cf86656065609708039f2e0f8b8b1d17a8d64e55";
+    private final int API_ID = 52411376;
+    private final String CLIENT_SECRET = "4RCgqt0XSBYh1sD19uSd";
+    private final String REDIRECT_URI = "http://localhost";
 
-    private final String SECURES_KEY_VK = "BE35kuav9Vb7yXKEPjqU";
-    private final String ACCESS_KEY_VK = "96eb9b9a96eb9b9a96eb9b" +
-            "9acc95f4206a996eb96eb9b9af015f4d2e2dc0158ccb29177";
+    private final String ACCESS_TOKEN = "vk1.a.Ee2U615pz1T9sQZgRK_exqxVkT95-" +
+            "9SXj9a6zIT1Ka2oX4oxexAzf3pGzUUY6M0EgqDNUwyDHJeVWhKTc_MQmkfln_DrTU11y9hRMGPOD-" +
+            "VNxdgAsIgUtJrqck3WjW7WzjwzoX_vaBqp1W0W6cm1BYipYhJBYkpiS6QUvHgz3HXD-neChZEtaDYGbBW4QIis";
 
-    public void getUserInfo(){
-        try {
-            UserAuthResponse authResponse = this.getAuthResponse();
+    private final HttpClient client = HttpClient.newHttpClient();
 
-            UserActor actor = new UserActor(
-                    authResponse.getUserId().longValue(),
-                    authResponse.getAccessToken()
-            );
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    public void getCode() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(
+                        URI.create("https://oauth.vk.com/authorize" +
+                                "?response_type=token" +
+                                "&client_id=" + API_ID +
+                                "&state=photos,groups" +
+                                "&scope=offline" +
+                                "display=page" +
+                                "&v=5.199")
+                ).GET().build();
+        //Переходим по ссылке из консоли
+        //Нажимаем войти как денис и из поисковой строки копируем ACCESS_TOKEN и заменяем его
+        System.out.println(request.uri());
+        //TODO заменить работу ручками на работу кодом
+        //return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    private UserAuthResponse getAuthResponse() throws Exception {
-        TransportClient transportClient = new HttpTransportClient();
-        VkApiClient vk = new VkApiClient(transportClient);
-
-        return vk.oAuth()
-                .userAuthorizationCodeFlow(
-                        Integer.getInteger(System.getenv("APP_ID")),
-                        System.getenv("CLIENT_SECRET"),
-                        System.getenv("REDIRECT_URI"),
-                        System.getenv("ACCESS_KEY")
-                ).execute();
-
+    public String getUserInfo(String userId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(
+                        URI.create("https://api.vk.com/method/users.get" +
+                                "?access_token=" + this.ACCESS_TOKEN +
+                                "&user_ids=" + userId +
+                                "&fields=" + "city,education" +
+                                "&v=5.199")
+                ).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
+
+
+
 }
