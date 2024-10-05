@@ -15,13 +15,9 @@ public class VkService {
     private final String CLIENT_SECRET = "4RCgqt0XSBYh1sD19uSd";
     private final String REDIRECT_URI = "http://localhost";
 
-    private final String ACCESS_TOKEN = "vk1.a.Ee2U615pz1T9sQZgRK_exqxVkT95-" +
-            "9SXj9a6zIT1Ka2oX4oxexAzf3pGzUUY6M0EgqDNUwyDHJeVWhKTc_MQmkfln_DrTU11y9hRMGPOD-" +
-            "VNxdgAsIgUtJrqck3WjW7WzjwzoX_vaBqp1W0W6cm1BYipYhJBYkpiS6QUvHgz3HXD-neChZEtaDYGbBW4QIis";
-
     private final HttpClient client = HttpClient.newHttpClient();
 
-    public void getCode() throws Exception {
+    public String getCode() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://oauth.vk.com/authorize" +
@@ -32,20 +28,20 @@ public class VkService {
                                 "display=page" +
                                 "&v=5.199")
                 ).GET().build();
-        //Переходим по ссылке из консоли
+        //Переходим по ссылке
         //Нажимаем войти как денис и из поисковой строки копируем ACCESS_TOKEN и заменяем его
-        System.out.println(request.uri());
+        return request.uri().toString();
         //TODO заменить работу ручками на работу кодом
         //return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    public String getUserInfo(String userId) throws Exception {
+    public String getUserInfo(String userIds, String fields) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + this.ACCESS_TOKEN +
-                                "&user_ids=" + userId +
-                                "&fields=" + "city,education" +
+                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                "&user_ids=" + userIds +
+                                "&fields=" + fields +
                                 "&v=5.199")
                 ).GET().build();
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
