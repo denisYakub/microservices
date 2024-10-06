@@ -19,8 +19,4 @@ public class UsersResponse implements Serializable {
 
     public List<User> response;
 
-    public void printFirstUser(){
-        System.out.println(this.response.get(0).id + " " + this.response.get(0).first_name + " " + this.response.get(0).last_name);
-    }
-
 }

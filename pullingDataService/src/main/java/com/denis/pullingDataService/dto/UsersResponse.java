@@ -1,31 +1,56 @@
 package com.denis.pullingDataService.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.List;
 
-public class UsersResponse implements Serializable {
-    public static class User{
-        int id;
-        String first_name;
-        String last_name;
-        boolean can_access_closed;
-        boolean is_closed;
+public class UsersResponse {
+    public class User{
+        public class City{
+            public int id;
+            public String title;
+
+            @Override
+            public String toString() {
+                return "City{" +
+                        "id=" + id +
+                        ", title='" + title + '\'' +
+                        '}';
+            }
+        }
+
+        public int id;
+        public City city;
+        public String first_name;
+        public String last_name;
+        public boolean can_access_closed;
+        public boolean is_closed;
+
+        @Override
+        public String toString() {
+            return "User{" +
+                    "id=" + id +
+                    ", city=" + city +
+                    ", first_name='" + first_name + '\'' +
+                    ", last_name='" + last_name + '\'' +
+                    ", can_access_closed=" + can_access_closed +
+                    ", is_closed=" + is_closed +
+                    '}';
+        }
     }
 
     public List<User> response;
 
     @Override
-    public String toString(){
-        StringBuilder resultStr = new StringBuilder("[\n");
-        for(var user: response){
-            resultStr.append("{")
-                    .append("\"id\": ").append(user.id).append("\t")
-                    .append("\"first_name\": ").append(user.first_name).append("\t")
-                    .append("\"last_name\": ").append(user.last_name).append("\t")
-                    .append("},\n");
-        }
-
-        return resultStr.append("]").toString();
+    public String toString() {
+        return "UserResponse{" +
+                "response=" + response +
+                '}';
     }
 
 }
