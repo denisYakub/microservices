@@ -17,9 +17,9 @@ public class UsersResponse {
 
             @Override
             public String toString() {
-                return "City{" +
-                        "id=" + id +
-                        ", title='" + title + '\'' +
+                return "{" +
+                        "\"id\":" + "\"" + id + "\"" +
+                        ", \"title\":" + "\"" + title + "\"" +
                         '}';
             }
         }
@@ -33,13 +33,13 @@ public class UsersResponse {
 
         @Override
         public String toString() {
-            return "User{" +
-                    "id=" + id +
-                    ", city=" + city +
-                    ", first_name='" + first_name + '\'' +
-                    ", last_name='" + last_name + '\'' +
-                    ", can_access_closed=" + can_access_closed +
-                    ", is_closed=" + is_closed +
+            return "{" +
+                    "\"id\":" + "\"" + id + "\"" +
+                    ", \"city\":" + "\"" + city + "\"" +
+                    ", \"first_name\":" + "\"" + first_name + "\"" +
+                    ", \"last_name\":" + "\"" + last_name + "\"" +
+                    ", \"can_access_closed\":" + "\"" + can_access_closed + "\"" +
+                    ", \"is_closed\":" + "\"" + is_closed + "\"" +
                     '}';
         }
     }
@@ -48,9 +48,7 @@ public class UsersResponse {
 
     @Override
     public String toString() {
-        return "UserResponse{" +
-                "response=" + response +
-                '}';
+        return response.toString();
     }
 
 }
