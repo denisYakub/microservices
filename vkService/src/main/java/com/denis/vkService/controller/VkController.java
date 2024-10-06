@@ -1,15 +1,13 @@
 package com.denis.vkService.controller;
 
 import com.denis.vkService.dto.UsersRequest;
+import com.denis.vkService.dto.UsersResponse;
 import com.denis.vkService.service.VkService;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/vk")
@@ -18,11 +16,11 @@ public class VkController {
     @Autowired
     private final VkService vkService;
 
-    @GetMapping()
+    @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    public String getVkUserInfo(@RequestBody UsersRequest usersRequest){
+    public String getVkUsersInfo(@RequestBody UsersRequest usersRequest){
         try{
-            return vkService.getUserInfo(usersRequest.getStringifyIds(), usersRequest.getStringifyFields());
+            return vkService.getUsersInfo(usersRequest.getStringifyIds(), usersRequest.getStringifyFields());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

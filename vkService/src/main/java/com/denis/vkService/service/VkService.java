@@ -1,12 +1,15 @@
 package com.denis.vkService.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.denis.vkService.dto.UsersResponse;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import com.google.gson.Gson;
+
+import javax.xml.crypto.Data;
 
 @Service
 public class VkService {
@@ -35,7 +38,7 @@ public class VkService {
         //return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    public String getUserInfo(String userIds, String fields) throws Exception {
+    public String getUsersInfo(String userIds, String fields) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +
@@ -44,9 +47,7 @@ public class VkService {
                                 "&fields=" + fields +
                                 "&v=5.199")
                 ).GET().build();
+
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
-
-
-
 }

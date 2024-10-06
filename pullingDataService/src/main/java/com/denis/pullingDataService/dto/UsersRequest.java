@@ -1,4 +1,4 @@
-package com.denis.vkService.dto;
+package com.denis.pullingDataService.dto;
 
 import lombok.Builder;
 
