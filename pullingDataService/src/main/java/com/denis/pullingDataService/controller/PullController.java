@@ -1,14 +1,10 @@
 package com.denis.pullingDataService.controller;
 
-import com.denis.pullingDataService.dto.UsersResponse;
 import com.denis.pullingDataService.service.PullService;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 @RestController
@@ -26,7 +22,7 @@ public class PullController {
             throw new RuntimeException(e);
         }
     }
-
+    //TODO доработать метод или обьеденить с верхним
     @GetMapping("/download")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String downloadUsers(@RequestParam int numberOfUsers){
