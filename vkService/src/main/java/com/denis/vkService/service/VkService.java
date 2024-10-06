@@ -1,8 +1,11 @@
 package com.denis.vkService.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.denis.vkService.dto.UserRecord;
+import com.denis.vkService.dto.UsersRecord;
+import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,47 +13,53 @@ import java.net.http.HttpResponse;
 
 @Service
 public class VkService {
-    private final String ACCESS_KEY = "656097086560970865609708b8667f2cf86656065609708039f2e0f8b8b1d17a8d64e55";
-    private final int API_ID = 52411376;
-    private final String CLIENT_SECRET = "4RCgqt0XSBYh1sD19uSd";
-    private final String REDIRECT_URI = "http://localhost";
-
-    private final String ACCESS_TOKEN = "vk1.a.Ee2U615pz1T9sQZgRK_exqxVkT95-" +
-            "9SXj9a6zIT1Ka2oX4oxexAzf3pGzUUY6M0EgqDNUwyDHJeVWhKTc_MQmkfln_DrTU11y9hRMGPOD-" +
-            "VNxdgAsIgUtJrqck3WjW7WzjwzoX_vaBqp1W0W6cm1BYipYhJBYkpiS6QUvHgz3HXD-neChZEtaDYGbBW4QIis";
+    private final int APP_ID = 52411376;
+    private final String ACCESS_TOKEN = null;
 
     private final HttpClient client = HttpClient.newHttpClient();
+    private final Gson gson = new Gson();
 
-    public void getCode() throws Exception {
+    public String getAccessTokenForEnv() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://oauth.vk.com/authorize" +
                                 "?response_type=token" +
-                                "&client_id=" + API_ID +
+                                "&client_id=" + this.APP_ID +
                                 "&state=photos,groups" +
                                 "&scope=offline" +
                                 "display=page" +
                                 "&v=5.199")
                 ).GET().build();
-        //Переходим по ссылке из консоли
-        //Нажимаем войти как денис и из поисковой строки копируем ACCESS_TOKEN и заменяем его
-        System.out.println(request.uri());
-        //TODO заменить работу ручками на работу кодом
-        //return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+        //TODO заменить на записывание токена в поле ACCESS_TOKEN
+        return request.uri().toString();
     }
 
-    public String getUserInfo(String userId) throws Exception {
+    public String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + this.ACCESS_TOKEN +
-                                "&user_ids=" + userId +
-                                "&fields=" + "city,education" +
+                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                "&user_ids=" + userIds +
+                                "&fields=" + fields +
                                 "&v=5.199")
                 ).GET().build();
-        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+        return this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
+    public UsersRecord getUsersInfoRecord(String userIds, String fields) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(
+                        URI.create("https://api.vk.com/method/users.get" +
+                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                "&user_ids=" + userIds +
+                                "&fields=" + fields +
+                                "&v=5.199")
+                ).GET().build();
+        String response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 
-
+        //TODO сделать возможным получение записи информации о пользователях в UsersRecord
+        return this.gson.fromJson(response, UsersRecord.class);
+    }
 }
