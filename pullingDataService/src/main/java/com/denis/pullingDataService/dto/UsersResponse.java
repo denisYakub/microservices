@@ -51,4 +51,8 @@ public class UsersResponse {
         return response.toString();
     }
 
+    public int getCountOfUsers(){
+        return this.response.size();
+    }
+
 }
