@@ -1,10 +1,14 @@
 package com.denis.pullingDataService.service;
 
 import com.denis.pullingDataService.configuration.Config;
+import com.denis.pullingDataService.dto.UserEntity;
 import com.denis.pullingDataService.dto.UsersRequest;
 import com.denis.pullingDataService.dto.UsersResponse;
+import com.denis.pullingDataService.repository.CityRepository;
+import com.denis.pullingDataService.repository.UserRepository;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -21,16 +25,20 @@ public class PullService {
 
     private final Config config;
     private final Gson gson;
+    @Autowired
+    private final UserRepository userRepository;
+    @Autowired
+    private final CityRepository cityRepository;
 
-    public List<UsersResponse> startDownloadingUsersFromIdToId(int fromId, int toId) {
+    public List<UsersResponse> startPulling(int fromId, int toId) {
         try{
             return this.startMultiThreadDownloading(fromId, toId);
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("ERROR IN RUNNING .startMultiThreadDownloading()");
+            throw new RuntimeException(e.getCause());
         }
     }
 
-    public List<UsersResponse> startDownloadingUsers(int numberOfUsers) {
+    public List<UsersResponse> startPulling(int numberOfUsers) {
         try {
             List<UsersResponse> results = new ArrayList<>();
             int step = this.NUMBER_OF_THREADS * 1000;
@@ -41,9 +49,13 @@ public class PullService {
                 results.addAll(this.startMultiThreadDownloading(fromId, toId));
             }
 
+            //TODO перенести в PostgreSqlService и грамотно внедрить в PullService
+            cityRepository.save(results.getFirst().getResponse().getFirst().getCity());
+            userRepository.save(results.getFirst().getResponse().getFirst());
+
             return results;
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("ERROR IN RUNNING .startMultiThreadDownloading()");
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -55,7 +67,7 @@ public class PullService {
         for(int i = 0; i < this.NUMBER_OF_THREADS; i++){
             int threadFromId = fromId + i * usersPerThread;
             int threadToId = (i == this.NUMBER_OF_THREADS - 1) ? toId : threadFromId + usersPerThread - 1;
-            tasks.add(() -> this.pullUsersFromVkServiceByIds(threadFromId, threadToId));
+            tasks.add(() -> this.pullUsersFromVkService(threadFromId, threadToId));
         }
 
         var responses = executor.invokeAll(tasks);
@@ -70,7 +82,7 @@ public class PullService {
         return results;
     }
 
-    private UsersResponse pullUsersFromVkServiceByIds(int fromId, int toId){
+    private UsersResponse pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
         String response = this.config.restTemplate()
                 .postForEntity(this.URL_VK_SERVICE, new UsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
@@ -89,15 +101,5 @@ public class PullService {
         }
 
         return ids;
-    }
-
-    private int countTotalDownloadedUsers(List<UsersResponse> results) {
-        int total = 0;
-
-        for (var result: results){
-            total += result.getCountOfUsers();
-        }
-
-        return total;
     }
 }
