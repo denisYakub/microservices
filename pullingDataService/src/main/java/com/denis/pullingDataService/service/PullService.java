@@ -26,19 +26,17 @@ public class PullService {
     private final Config config;
     private final Gson gson;
     @Autowired
-    private final UserRepository userRepository;
-    @Autowired
-    private final CityRepository cityRepository;
+    private final PostgresqlService postgresqlService;
 
-    public List<UsersResponse> startPulling(int fromId, int toId) {
+    public void startPulling(int fromId, int toId) {
         try{
-            return this.startMultiThreadDownloading(fromId, toId);
+            this.postgresqlService.saveListOfUsers(this.startMultiThreadDownloading(fromId, toId));
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
     }
 
-    public List<UsersResponse> startPulling(int numberOfUsers) {
+    public void startPulling(int numberOfUsers) {
         try {
             List<UsersResponse> results = new ArrayList<>();
             int step = this.NUMBER_OF_THREADS * 1000;
@@ -49,11 +47,7 @@ public class PullService {
                 results.addAll(this.startMultiThreadDownloading(fromId, toId));
             }
 
-            //TODO перенести в PostgreSqlService и грамотно внедрить в PullService
-            cityRepository.save(results.getFirst().getResponse().getFirst().getCity());
-            userRepository.save(results.getFirst().getResponse().getFirst());
-
-            return results;
+            this.postgresqlService.saveListOfUsers(results);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }

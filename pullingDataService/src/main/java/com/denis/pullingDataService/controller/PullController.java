@@ -1,6 +1,6 @@
 package com.denis.pullingDataService.controller;
 
-import com.denis.pullingDataService.service.PostgreSqlService;
+import com.denis.pullingDataService.service.PostgresqlService;
 import com.denis.pullingDataService.service.PullService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,23 +14,23 @@ import java.util.concurrent.*;
 @AllArgsConstructor
 public class PullController {
     private PullService pullService;
-    private PostgreSqlService postgreSqlService;
+    private PostgresqlService postgresqlService;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public String pullUsersFromIdToId(@RequestParam int fromId, @RequestParam int toId) {
-        return this.pullService.startPulling(fromId, toId).toString();
+    public void pullUsersFromIdToId(@RequestParam int fromId, @RequestParam int toId) {
+        this.pullService.startPulling(fromId, toId);
     }
 
     @GetMapping("/startingFromFirst")
     @ResponseStatus(HttpStatus.OK)
-    public String pullUsersFromFirstOneAndTill(@RequestParam int numberOfUsers){
-        return this.pullService.startPulling(numberOfUsers).toString();
+    public void pullUsersFromFirstOneAndTill(@RequestParam int numberOfUsers){
+        this.pullService.startPulling(numberOfUsers);
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public String getUSer(@PathVariable int id){
-        return this.postgreSqlService.getUser(id).toString();
+    public void saveUSer(){
+        this.postgresqlService.saveUser();
     }
 }

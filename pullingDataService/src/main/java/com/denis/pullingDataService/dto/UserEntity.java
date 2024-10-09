@@ -1,22 +1,27 @@
 package com.denis.pullingDataService.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id")
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    @Nullable
     private CityEntity city;
+
     private String first_name;
     private String last_name;
     private boolean can_access_closed;
