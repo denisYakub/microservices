@@ -1,6 +1,5 @@
 package com.denis.vkService.service;
 
-import com.denis.vkService.dto.UserRecord;
 import com.denis.vkService.dto.UsersRecord;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
@@ -35,31 +34,45 @@ public class VkService {
         return request.uri().toString();
     }
 
-    public String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(
-                        URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
-                                "&user_ids=" + userIds +
-                                "&fields=" + fields +
-                                "&v=5.199")
-                ).GET().build();
+    public String getUsersInfoJSON(String userIds, String fields) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(
+                            URI.create("https://api.vk.com/method/users.get" +
+                                    "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                    "&user_ids=" + userIds +
+                                    "&fields=" + fields +
+                                    "&v=5.199")
+                    ).GET().build();
 
-        return this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            var response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+            if(response.contains("error_msg")){
+                throw new RuntimeException(response);
+            }
+
+            return response;
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public UsersRecord getUsersInfoRecord(String userIds, String fields) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(
-                        URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
-                                "&user_ids=" + userIds +
-                                "&fields=" + fields +
-                                "&v=5.199")
-                ).GET().build();
-        String response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    public UsersRecord getUsersInfoRecord(String userIds, String fields) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(
+                            URI.create("https://api.vk.com/method/users.get" +
+                                    "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                    "&user_ids=" + userIds +
+                                    "&fields=" + fields +
+                                    "&v=5.199")
+                    ).GET().build();
+            String response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 
-        //TODO сделать возможным получение записи информации о пользователях в UsersRecord
-        return this.gson.fromJson(response, UsersRecord.class);
+            //TODO сделать возможным получение записи информации о пользователях в UsersRecord
+            return this.gson.fromJson(response, UsersRecord.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
