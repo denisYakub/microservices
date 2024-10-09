@@ -30,27 +30,29 @@ public class PullService {
 
     public void startPulling(int fromId, int toId) {
         try{
-            this.postgresqlService.saveListOfUsers(this.startMultiThreadDownloading(fromId, toId));
+            List<UsersResponse> results = this.splitAndStartMultiThreadDownloading(fromId, toId);
+            this.postgresqlService.saveUsersResponses(results);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
     }
 
-    public void startPulling(int numberOfUsers) {
-        try {
-            List<UsersResponse> results = new ArrayList<>();
-            int step = this.NUMBER_OF_THREADS * 1000;
+    private List<UsersResponse> splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
+        List<UsersResponse> results = new ArrayList<>();
+        int numberOfUsers = toId - fromId;
+        int step = this.NUMBER_OF_THREADS * 1000;
 
-            for(int i = 0; i < numberOfUsers / step; i++){
-                int fromId = i * step + 1;
-                int toId = (i + 1) * step;
-                results.addAll(this.startMultiThreadDownloading(fromId, toId));
-            }
-
-            this.postgresqlService.saveListOfUsers(results);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e.getCause());
+        if(numberOfUsers < step){
+            throw new RuntimeException("Size of users should be more or equals " + step);
         }
+
+        for(int i = 0; i < numberOfUsers / step; i++){
+            int fromSplitId = fromId + i * step;
+            int toSplitId = Math.min(fromSplitId + step, toId);
+            results.addAll(this.startMultiThreadDownloading(fromSplitId, toSplitId));
+        }
+
+        return results;
     }
 
     private List<UsersResponse> startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {

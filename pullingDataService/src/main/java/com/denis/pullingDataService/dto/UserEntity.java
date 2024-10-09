@@ -38,4 +38,8 @@ public class UserEntity{
                 ", \"is_closed\":" + "\"" + is_closed + "\"" +
                 '}';
     }
+
+    public boolean cityIsNull(){
+        return this.city == null;
+    }
 }

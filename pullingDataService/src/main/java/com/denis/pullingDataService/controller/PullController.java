@@ -17,20 +17,14 @@ public class PullController {
     private PostgresqlService postgresqlService;
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void pullUsersFromIdToId(@RequestParam int fromId, @RequestParam int toId) {
         this.pullService.startPulling(fromId, toId);
     }
 
-    @GetMapping("/startingFromFirst")
-    @ResponseStatus(HttpStatus.OK)
-    public void pullUsersFromFirstOneAndTill(@RequestParam int numberOfUsers){
-        this.pullService.startPulling(numberOfUsers);
-    }
-
-    @GetMapping("/user")
-    @ResponseStatus(HttpStatus.OK)
-    public void saveUSer(){
-        this.postgresqlService.saveUser();
+    @GetMapping("/{numberOfUsers}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void pullUsersFromFirstOneAndTill(@PathVariable int numberOfUsers){
+        this.pullService.startPulling(0, numberOfUsers);
     }
 }

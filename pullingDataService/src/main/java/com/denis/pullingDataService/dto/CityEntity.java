@@ -26,4 +26,5 @@ public class CityEntity{
                 ", \"title\":" + "\"" + title + "\"" +
                 '}';
     }
+
 }
