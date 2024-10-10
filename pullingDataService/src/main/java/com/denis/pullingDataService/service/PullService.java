@@ -23,10 +23,10 @@ public class PullService {
     private final String[] FIELDS_OF_USER_TO_GET = new String[]{"city"};
     private final int NUMBER_OF_THREADS = 8;
 
-    private final Config config;
-    private final Gson gson;
+    public final Config config;
+    public final Gson gson;
     @Autowired
-    private final PostgresqlService postgresqlService;
+    public final PostgresqlService postgresqlService;
 
     public void startPulling(int fromId, int toId) {
         try{
@@ -37,7 +37,7 @@ public class PullService {
         }
     }
 
-    private List<UsersResponse> splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
+    public List<UsersResponse> splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
         List<UsersResponse> results = new ArrayList<>();
         int numberOfUsers = toId - fromId;
         int step = this.NUMBER_OF_THREADS * 1000;
@@ -55,7 +55,7 @@ public class PullService {
         return results;
     }
 
-    private List<UsersResponse> startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {
+    public List<UsersResponse> startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {
         int usersPerThread = (toId - fromId + 1) / this.NUMBER_OF_THREADS;
         List<Callable<UsersResponse>> tasks = new ArrayList<>();
         ExecutorService executor = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
@@ -78,7 +78,7 @@ public class PullService {
         return results;
     }
 
-    private UsersResponse pullUsersFromVkService(int fromId, int toId) {
+    public UsersResponse pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
         String response = this.config.restTemplate()
                 .postForEntity(this.URL_VK_SERVICE, new UsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
@@ -87,7 +87,7 @@ public class PullService {
         return this.gson.fromJson(response, UsersResponse.class);
     }
 
-    private int[] getArrayOfIds(int firstId, int lastId){
+    public int[] getArrayOfIds(int firstId, int lastId){
         int sizeOfIdsArray = lastId - firstId + 1;
         int[] ids = new int[sizeOfIdsArray];
         int valueOfIdsArray = firstId;

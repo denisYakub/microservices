@@ -1,6 +1,5 @@
 package com.denis.vkService.controller;
 
-import com.denis.vkService.dto.UsersRecord;
 import com.denis.vkService.dto.UsersRequest;
 import com.denis.vkService.service.VkService;
 import lombok.AllArgsConstructor;
@@ -34,7 +33,8 @@ public class VkController {
     public String getVkUsersInfo(@RequestBody UsersRequest usersRequest){
         return this.vkService.getUsersBasicInfo(
                 usersRequest.getStringifyIds(),
-                usersRequest.getStringifyFields()
+                usersRequest.getStringifyFields(),
+                System.getenv("ACCESS_TOKEN")
         );
     }
 }

@@ -1,6 +1,5 @@
 package com.denis.vkService.service;
 
-import com.denis.vkService.dto.UsersRecord;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +33,14 @@ public class VkService {
         return request.uri().toString();
     }
 
+    public String getUsersBasicInfo(String ids, String fields, String accessToken){
+        try {
+            return this.getUsersInfoJSON(ids, fields, accessToken);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public void setAccessToken(String accessToken){
         if(isValidAccessToken(accessToken)) {
             this.ACCESS_TOKEN = accessToken;
@@ -42,28 +49,20 @@ public class VkService {
         }
     }
 
-    public String getUsersBasicInfo(String ids, String fields){
-        try {
-            return this.getUsersInfoJSON(ids, fields);
-        }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
     private boolean isValidAccessToken(String accessToken){
         try {
-            this.getUsersBasicInfo("1", "");
+            this.getUsersBasicInfo("1", "", accessToken);
             return true;
         }catch (RuntimeException e){
             return false;
         }
     }
 
-    private String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
+    private String getUsersInfoJSON(String userIds, String fields, String accessToken) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                "?access_token=" + accessToken +
                                 "&user_ids=" + userIds +
                                 "&fields=" + fields +
                                 "&v=5.199")

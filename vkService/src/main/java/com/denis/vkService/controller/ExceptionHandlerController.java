@@ -1,6 +1,5 @@
 package com.denis.vkService.controller;
 
-import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
