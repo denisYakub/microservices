@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 @Service
 public class VkService {
     private final int APP_ID = 52411376;
-    private final String ACCESS_TOKEN = null;
+    private String ACCESS_TOKEN = null;
 
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
@@ -34,45 +34,47 @@ public class VkService {
         return request.uri().toString();
     }
 
-    public String getUsersInfoJSON(String userIds, String fields) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(
-                            URI.create("https://api.vk.com/method/users.get" +
-                                    "?access_token=" + System.getenv("ACCESS_TOKEN") +
-                                    "&user_ids=" + userIds +
-                                    "&fields=" + fields +
-                                    "&v=5.199")
-                    ).GET().build();
-
-            var response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-            if(response.contains("error_msg")){
-                throw new RuntimeException(response);
-            }
-
-            return response;
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+    public void setAccessToken(String accessToken){
+        if(isValidAccessToken(accessToken)) {
+            this.ACCESS_TOKEN = accessToken;
+        }else{
+            throw new RuntimeException("Access token isn't valid");
         }
     }
 
-    public UsersRecord getUsersInfoRecord(String userIds, String fields) {
+    public String getUsersBasicInfo(String ids, String fields){
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(
-                            URI.create("https://api.vk.com/method/users.get" +
-                                    "?access_token=" + System.getenv("ACCESS_TOKEN") +
-                                    "&user_ids=" + userIds +
-                                    "&fields=" + fields +
-                                    "&v=5.199")
-                    ).GET().build();
-            String response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-            //TODO сделать возможным получение записи информации о пользователях в UsersRecord
-            return this.gson.fromJson(response, UsersRecord.class);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            return this.getUsersInfoJSON(ids, fields);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private boolean isValidAccessToken(String accessToken){
+        try {
+            this.getUsersBasicInfo("1", "");
+            return true;
+        }catch (RuntimeException e){
+            return false;
+        }
+    }
+
+    private String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(
+                        URI.create("https://api.vk.com/method/users.get" +
+                                "?access_token=" + System.getenv("ACCESS_TOKEN") +
+                                "&user_ids=" + userIds +
+                                "&fields=" + fields +
+                                "&v=5.199")
+                ).GET().build();
+
+        var response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+        if(response.contains("error_msg")){
+            throw new RuntimeException(response);
+        }
+
+        return response;
     }
 }

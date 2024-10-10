@@ -23,19 +23,16 @@ public class VkController {
         return this.vkService.getAccessTokenForEnv();
     }
 
+    @PostMapping("/{accessToken}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void setAccessTokenForVkApiRequests(@PathVariable String accessToken){
+        this.vkService.setAccessToken(accessToken);
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
     public String getVkUsersInfo(@RequestBody UsersRequest usersRequest){
-        return this.vkService.getUsersInfoJSON(
-                usersRequest.getStringifyIds(),
-                usersRequest.getStringifyFields()
-        );
-    }
-
-    @PostMapping("/test/getRecord")
-    @ResponseStatus(HttpStatus.OK)
-    public UsersRecord getVkUsersInfoRecord(@RequestBody UsersRequest usersRequest){
-        return this.vkService.getUsersInfoRecord(
+        return this.vkService.getUsersBasicInfo(
                 usersRequest.getStringifyIds(),
                 usersRequest.getStringifyFields()
         );
