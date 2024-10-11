@@ -1,32 +1,35 @@
 package com.denis.pullingDataService.service;
 
 import com.denis.pullingDataService.configuration.Config;
-import com.denis.pullingDataService.dto.UserEntity;
 import com.denis.pullingDataService.dto.UsersRequest;
 import com.denis.pullingDataService.dto.UsersResponse;
-import com.denis.pullingDataService.repository.CityRepository;
-import com.denis.pullingDataService.repository.UserRepository;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PullService {
-    private final String URL_VK_SERVICE = "http://localhost:80/api/vk";
-    private final String[] FIELDS_OF_USER_TO_GET = new String[]{"city"};
-    private final int NUMBER_OF_THREADS = 8;
-
-    public final Config config;
-    public final Gson gson;
     @Autowired
     public final PostgresqlService postgresqlService;
+
+    public final RestTemplate restTemplate = new RestTemplate();
+    public final Gson gson = new Gson();
+
+    @Value("${global.numberOfThreads}")
+    private int NUMBER_OF_THREADS;
+
+    private final String URL_VK_SERVICE = "http://localhost:80/api/vk";
+    private final String[] FIELDS_OF_USER_TO_GET = new String[]{"city"};
+
 
     public void startPulling(int fromId, int toId) {
         try{
@@ -80,7 +83,7 @@ public class PullService {
 
     public UsersResponse pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
-        String response = this.config.restTemplate()
+        String response = this.restTemplate
                 .postForEntity(this.URL_VK_SERVICE, new UsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
                 .getBody();
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class VkController {
     private final VkService vkService;
 
-    @GetMapping("/accessToken")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public String getAccessTokenForVkApiRequests(){
         //Переходим по ссылке
@@ -22,19 +22,12 @@ public class VkController {
         return this.vkService.getAccessTokenForEnv();
     }
 
-    @PostMapping("/{accessToken}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void setAccessTokenForVkApiRequests(@PathVariable String accessToken){
-        this.vkService.setAccessToken(accessToken);
-    }
-
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
     public String getVkUsersInfo(@RequestBody UsersRequest usersRequest){
         return this.vkService.getUsersBasicInfo(
                 usersRequest.getStringifyIds(),
-                usersRequest.getStringifyFields(),
-                System.getenv("ACCESS_TOKEN")
+                usersRequest.getStringifyFields()
         );
     }
 }

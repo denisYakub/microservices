@@ -1,6 +1,7 @@
 package com.denis.vkService.service;
 
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,11 +12,13 @@ import java.net.http.HttpResponse;
 
 @Service
 public class VkService {
-    private final int APP_ID = 52411376;
-    private String ACCESS_TOKEN = null;
-
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
+
+    @Value("${global.APP_ID}")
+    private int APP_ID;
+    @Value("${global.ACCESS_TOKEN}")
+    private String ACCESS_TOKEN;
 
     public String getAccessTokenForEnv() {
         HttpRequest request = HttpRequest.newBuilder()
@@ -33,36 +36,28 @@ public class VkService {
         return request.uri().toString();
     }
 
-    public String getUsersBasicInfo(String ids, String fields, String accessToken){
+    public String getUsersBasicInfo(String ids, String fields){
         try {
-            return this.getUsersInfoJSON(ids, fields, accessToken);
+            return this.getUsersInfoJSON(ids, fields);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public void setAccessToken(String accessToken){
-        if(isValidAccessToken(accessToken)) {
-            this.ACCESS_TOKEN = accessToken;
-        }else{
-            throw new RuntimeException("Access token isn't valid");
-        }
-    }
-
-    private boolean isValidAccessToken(String accessToken){
+    private boolean isValidAccessToken(){
         try {
-            this.getUsersBasicInfo("1", "", accessToken);
+            this.getUsersBasicInfo("1", "");
             return true;
         }catch (RuntimeException e){
             return false;
         }
     }
 
-    private String getUsersInfoJSON(String userIds, String fields, String accessToken) throws IOException, InterruptedException {
+    private String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + accessToken +
+                                "?access_token=" + this.ACCESS_TOKEN +
                                 "&user_ids=" + userIds +
                                 "&fields=" + fields +
                                 "&v=5.199")

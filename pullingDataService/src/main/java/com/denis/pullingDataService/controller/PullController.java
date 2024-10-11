@@ -3,6 +3,7 @@ package com.denis.pullingDataService.controller;
 import com.denis.pullingDataService.service.PostgresqlService;
 import com.denis.pullingDataService.service.PullService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +14,7 @@ import java.util.concurrent.*;
 @RequestMapping("/api/pull")
 @AllArgsConstructor
 public class PullController {
-    private PullService pullService;
-    private PostgresqlService postgresqlService;
+    private final PullService pullService;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.CREATED)

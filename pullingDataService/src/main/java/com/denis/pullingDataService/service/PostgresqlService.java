@@ -7,8 +7,10 @@ import com.denis.pullingDataService.repository.CityRepository;
 import com.denis.pullingDataService.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.hibernate.sql.exec.ExecutionException;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor()
 public class PostgresqlService {
-    private final int NUMBER_OF_THREADS = 8;
+    @Autowired
+    private CityRepository cityRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    @Autowired
-    private final CityRepository cityRepository;
-    @Autowired
-    private final UserRepository userRepository;
+    @Value("${global.numberOfThreads}")
+    private int NUMBER_OF_THREADS;
 
     public void saveUsersResponses(List<UsersResponse> usersResponses){
         try{
