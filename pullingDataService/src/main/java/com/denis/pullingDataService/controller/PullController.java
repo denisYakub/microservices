@@ -1,14 +1,9 @@
 package com.denis.pullingDataService.controller;
 
-import com.denis.pullingDataService.service.PostgresqlService;
 import com.denis.pullingDataService.service.PullService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.HttpRetryException;
-import java.util.concurrent.*;
 
 @RestController
 @RequestMapping("/api/pull")

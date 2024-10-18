@@ -1,6 +1,8 @@
 package com.denis.vkService.service;
 
 import com.google.gson.Gson;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,16 +13,19 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Service
+@RequiredArgsConstructor
 public class VkService {
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final Gson gson = new Gson();
+    @Autowired
+    private final Gson gson;
 
-    @Value("${global.APP_ID}")
-    private int APP_ID;
+    private final HttpClient client = HttpClient.newHttpClient();
+
     @Value("${global.ACCESS_TOKEN}")
     private String ACCESS_TOKEN;
+    @Value("${global.APP_ID}")
+    private int APP_ID;
 
-    public String getAccessTokenForEnv() {
+    public String getAccessTokenForVkRequests() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://oauth.vk.com/authorize" +
@@ -32,28 +37,18 @@ public class VkService {
                                 "&v=5.199")
                 ).GET().build();
 
-        //TODO заменить на записывание токена в поле ACCESS_TOKEN
         return request.uri().toString();
     }
 
-    public String getUsersBasicInfo(String ids, String fields){
+    public String getUsersBasicInfoFromVkApiBy(String ids, String fields){
         try {
-            return this.getUsersInfoJSON(ids, fields);
+            return this.vkApiMethodUsersGet(ids, fields);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private boolean isValidAccessToken(){
-        try {
-            this.getUsersBasicInfo("1", "");
-            return true;
-        }catch (RuntimeException e){
-            return false;
-        }
-    }
-
-    private String getUsersInfoJSON(String userIds, String fields) throws IOException, InterruptedException {
+    private String vkApiMethodUsersGet(String userIds, String fields) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(
                         URI.create("https://api.vk.com/method/users.get" +

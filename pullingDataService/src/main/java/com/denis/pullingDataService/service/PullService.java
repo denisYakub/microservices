@@ -1,17 +1,14 @@
 package com.denis.pullingDataService.service;
 
-import com.denis.pullingDataService.configuration.Config;
 import com.denis.pullingDataService.dto.UsersRequest;
 import com.denis.pullingDataService.dto.UsersResponse;
 import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.*;
 

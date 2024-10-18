@@ -2,12 +2,10 @@ package com.denis.pullingDataService.service;
 
 import com.denis.pullingDataService.dto.CityEntity;
 import com.denis.pullingDataService.dto.UserEntity;
-import com.denis.pullingDataService.dto.UsersResponse;
 import com.denis.pullingDataService.repository.CityRepository;
 import com.denis.pullingDataService.repository.UserRepository;
+import com.denis.pullingDataService.dto.UsersResponse;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
