@@ -1,23 +1,4 @@
-package com.denis.pullingDataService.service;
-
-import com.denis.pullingDataService.dto.CityEntity;
-import com.denis.pullingDataService.dto.UserEntity;
-import com.denis.pullingDataService.repository.CityRepository;
-import com.denis.pullingDataService.repository.UserRepository;
-import com.denis.pullingDataService.dto.UsersResponse;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-@Service
+/*@Service
 @RequiredArgsConstructor()
 public class PostgresqlService {
     @Autowired
@@ -76,4 +57,4 @@ public class PostgresqlService {
         }
         userRepository.saveAll(users);
     }
-}
+}*/

@@ -1,37 +1,34 @@
 package com.denis.pullingDataService.service;
 
+import com.denis.pullingDataService.configuration.Config;
 import com.denis.pullingDataService.dto.UsersRequest;
 import com.denis.pullingDataService.dto.UsersResponse;
 import com.google.gson.Gson;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PullService {
     @Autowired
-    public final PostgresqlService postgresqlService;
-
-    public final RestTemplate restTemplate = new RestTemplate();
-    public final Gson gson = new Gson();
-
-    @Value("${global.numberOfThreads}")
-    private int NUMBER_OF_THREADS;
+    public final Config config;
+    @Autowired
+    public final Gson gson;
+    /*@Autowired
+    public final PostgresqlService postgresqlService;*/
 
     private final String URL_VK_SERVICE = "http://localhost:80/api/vk";
     private final String[] FIELDS_OF_USER_TO_GET = new String[]{"city"};
-
+    private final int NUMBER_OF_THREADS = 8;
 
     public void startPulling(int fromId, int toId) {
         try{
             List<UsersResponse> results = this.splitAndStartMultiThreadDownloading(fromId, toId);
-            this.postgresqlService.saveUsersResponses(results);
+            //this.postgresqlService.saveUsersResponses(results);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
@@ -63,7 +60,11 @@ public class PullService {
         for(int i = 0; i < this.NUMBER_OF_THREADS; i++){
             int threadFromId = fromId + i * usersPerThread;
             int threadToId = (i == this.NUMBER_OF_THREADS - 1) ? toId : threadFromId + usersPerThread - 1;
-            tasks.add(() -> this.pullUsersFromVkService(threadFromId, threadToId));
+            tasks.add(() -> {
+                var response = this.pullUsersFromVkService(threadFromId, threadToId);
+                //TODO заменить на вызов KAFKA
+                return response;
+            });
         }
 
         var responses = executor.invokeAll(tasks);
@@ -80,7 +81,7 @@ public class PullService {
 
     public UsersResponse pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
-        String response = this.restTemplate
+        String response = this.config.restTemplate()
                 .postForEntity(this.URL_VK_SERVICE, new UsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
                 .getBody();
 

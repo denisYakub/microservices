@@ -1,6 +1,5 @@
 package com.denis.pullingDataService.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 

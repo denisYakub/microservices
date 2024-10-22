@@ -1,8 +1,11 @@
 package com.denis.BdService.service;
 
-import com.denis.BdService.dto.UsersResponse;
+import com.denis.BdService.dto.CityEntity;
+import com.denis.BdService.dto.UserEntity;
+import com.denis.BdService.dto.UsersRequest;
 import com.denis.BdService.repository.CityRepository;
 import com.denis.BdService.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +26,34 @@ public class PostgresqlService {
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
 
-    public void saveUsersResponses(List<UsersResponse> usersResponses){
+    public void saveUsersRequest(UsersRequest usersRequest){
         try{
-            //this.splitAndStartMultiThreadSaving(usersResponses);
+            this.saveListOfUsers(usersRequest.response());
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void deleteAllRecordsFromBd(){
 
+    }
+
+    @Transactional
+    private void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
+        //TODO оптимизировать запрос, чтоб не было лишних запросов в бд
+        //HashMap<CityEntity, String> cityHash = new HashMap<>();
+
+        for (UserEntity user : users) {
+            if (!user.cityIsNull()) {
+                CityEntity city = user.getCity();
+                CityEntity existingCity = this.cityRepository.findByTitle(city.getTitle());
+                if (existingCity != null) {
+                    user.setCity(existingCity);
+                } else {
+                    cityRepository.save(city);
+                }
+            }
+        }
+        userRepository.saveAll(users);
+    }
 }

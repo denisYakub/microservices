@@ -1,6 +1,6 @@
 package com.denis.BdService.repository;
 
-import com.denis.pullingDataService.dto.CityEntity;
+import com.denis.BdService.dto.CityEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
