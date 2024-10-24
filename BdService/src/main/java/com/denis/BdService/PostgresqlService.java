@@ -9,7 +9,7 @@ public class PostgresqlService {
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
 
-    public void saveUsersResponses(List<UsersResponse> usersResponses){
+    public void saveUsersResponses(List<UsersRequest> usersResponses){
         try{
             this.splitAndStartMultiThreadSaving(usersResponses);
         } catch (DataAccessException e) {
@@ -17,13 +17,13 @@ public class PostgresqlService {
         }
     }
 
-    private void splitAndStartMultiThreadSaving(List<UsersResponse> usersResponses){
+    private void splitAndStartMultiThreadSaving(List<UsersRequest> usersResponses){
         for(int i = 0; i < usersResponses.size(); i += this.NUMBER_OF_THREADS) {
             this.startMultiThreadSaving(usersResponses.subList(i, i + this.NUMBER_OF_THREADS));
         }
     }
 
-    private void startMultiThreadSaving(List<UsersResponse> usersResponses){
+    private void startMultiThreadSaving(List<UsersRequest> usersResponses){
         ExecutorService executor = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
         List<Runnable> tasks = new ArrayList<>();
 

@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CityEntity{
+public class CountryEntity {
     public int id;
 
     public String title;
@@ -19,5 +19,4 @@ public class CityEntity{
                 ", \"title\":" + "\"" + title + "\"" +
                 '}';
     }
-
 }

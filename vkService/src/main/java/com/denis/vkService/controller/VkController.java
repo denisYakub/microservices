@@ -1,6 +1,6 @@
 package com.denis.vkService.controller;
 
-import com.denis.vkService.dto.UsersRequest;
+import com.denis.vkService.dto.vkUsersRequest;
 import com.denis.vkService.service.VkService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,10 @@ public class VkController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    public String getUsersInfoJsonBy(@RequestBody UsersRequest usersRequest){
+    public String getUsersInfoJsonBy(@RequestBody vkUsersRequest vkUsersRequest){
         return this.vkService.getUsersBasicInfoFromVkApiBy(
-                usersRequest.getStringifyIds(),
-                usersRequest.getStringifyFields()
+                vkUsersRequest.getStringifyIds(),
+                vkUsersRequest.getStringifyFields()
         );
     }
 }

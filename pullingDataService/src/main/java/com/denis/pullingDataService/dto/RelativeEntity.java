@@ -7,17 +7,18 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CityEntity{
+public class RelativeEntity {
     public int id;
 
-    public String title;
+    private String name;
+    private String type;
 
     @Override
     public String toString() {
         return "{" +
                 "\"id\":" + "\"" + id + "\"" +
-                ", \"title\":" + "\"" + title + "\"" +
+                ", \"name\":" + "\"" + name + "\"" +
+                ", \"type\":" + "\"" + type + "\"" +
                 '}';
     }
-
 }

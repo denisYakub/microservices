@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.Arrays;
 
 @Builder
-public record UsersRequest(int[] ids, String[] fields) {
+public record vkUsersRequest(int[] ids, String[] fields) {
     public String getStringifyIds(){
         return Arrays.toString(this.ids)
                 .replace(" ", "")

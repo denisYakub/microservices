@@ -1,11 +1,19 @@
 package com.denis.BdService.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Builder
-public record UsersRequest(List<UserEntity> response) {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class UsersRequest {
+
+    private List<UserEntity> response;
 
     @Override
     public String toString() {

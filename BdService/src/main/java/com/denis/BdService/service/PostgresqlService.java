@@ -1,10 +1,8 @@
 package com.denis.BdService.service;
 
-import com.denis.BdService.dto.CityEntity;
-import com.denis.BdService.dto.UserEntity;
-import com.denis.BdService.dto.UsersRequest;
-import com.denis.BdService.repository.CityRepository;
-import com.denis.BdService.repository.UserRepository;
+import com.denis.BdService.dto.*;
+import com.denis.BdService.repository.*;
+import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor()
 public class PostgresqlService {
     @Autowired
+    private final Gson gson;
+    @Autowired
     private CityRepository cityRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CountryRepository countryRepository;
+    @Autowired
+    private EducationRepository educationRepository;
+    @Autowired
+    private ContactRepository contactRepository;
+    @Autowired
+    private CountersRepository countersRepository;
+    @Autowired
+    private PersonalRepository personalRepository;
 
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
 
-    public void saveUsersRequest(UsersRequest usersRequest){
+    public void saveUsersRequest(String usersRequestJson){
         try{
-            this.saveListOfUsers(usersRequest.response());
+            UsersRequest usersRequest = gson.fromJson(usersRequestJson, UsersRequest.class);
+            this.saveListOfUsers(usersRequest.getResponse());
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteAllRecordsFromBd(){
-
-    }
-
     @Transactional
     private void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
-        //TODO оптимизировать запрос, чтоб не было лишних запросов в бд
-        //HashMap<CityEntity, String> cityHash = new HashMap<>();
-
         for (UserEntity user : users) {
             if (!user.cityIsNull()) {
                 CityEntity city = user.getCity();

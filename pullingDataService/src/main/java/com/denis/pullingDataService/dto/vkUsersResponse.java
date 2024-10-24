@@ -8,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UsersResponse {
+public class vkUsersResponse {
 
     private List<UserEntity> response;
 

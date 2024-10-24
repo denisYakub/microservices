@@ -1,7 +1,7 @@
 package com.denis.vkService;
 
 import com.denis.vkService.controller.VkController;
-import com.denis.vkService.dto.UsersRequest;
+import com.denis.vkService.dto.vkUsersRequest;
 import com.denis.vkService.service.VkService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ class VkServiceApplicationTests {
 
 	@Test
 	void testGetUserInfoController() {
-		UsersRequest requestBody = new UsersRequest(
+		vkUsersRequest requestBody = new vkUsersRequest(
 				new int[]{1, 2, 3, 4},
 				new String[]{"city", "education"}
 		);
