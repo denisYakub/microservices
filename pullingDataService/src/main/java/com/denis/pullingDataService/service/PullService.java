@@ -2,43 +2,39 @@ package com.denis.pullingDataService.service;
 
 import com.denis.pullingDataService.configuration.Config;
 import com.denis.pullingDataService.dto.UserEntity;
-import com.denis.pullingDataService.dto.UsersRequest;
-import com.denis.pullingDataService.dto.UsersResponse;
-import com.denis.pullingDataService.repository.CityRepository;
-import com.denis.pullingDataService.repository.UserRepository;
-import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
+import com.denis.pullingDataService.dto.vkUsersRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
-import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PullService {
-    private final String URL_VK_SERVICE = "http://localhost:80/api/vk";
-    private final String[] FIELDS_OF_USER_TO_GET = new String[]{"city"};
-    private final int NUMBER_OF_THREADS = 8;
-
-    private final Config config;
-    private final Gson gson;
     @Autowired
-    private final PostgresqlService postgresqlService;
+    public final Config config;
+
+    @Value("${global.URL_VK_SERVICE}")
+    private String URL_VK_SERVICE;
+    @Value("${global.URL_KAFKA_SERVICE}")
+    private String URL_KAFKA_SERVICE;
+    @Value("${global.numberOfThreads}")
+    private int NUMBER_OF_THREADS;
+
+    private final String[] FIELDS_OF_USER_TO_GET = UserEntity.getListOfStringFields();
 
     public void startPulling(int fromId, int toId) {
         try{
-            List<UsersResponse> results = this.splitAndStartMultiThreadDownloading(fromId, toId);
-            this.postgresqlService.saveUsersResponses(results);
+            this.splitAndStartMultiThreadDownloading(fromId, toId);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
     }
 
-    private List<UsersResponse> splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
-        List<UsersResponse> results = new ArrayList<>();
+    public void splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
         int numberOfUsers = toId - fromId;
         int step = this.NUMBER_OF_THREADS * 1000;
 
@@ -49,45 +45,43 @@ public class PullService {
         for(int i = 0; i < numberOfUsers / step; i++){
             int fromSplitId = fromId + i * step;
             int toSplitId = Math.min(fromSplitId + step, toId);
-            results.addAll(this.startMultiThreadDownloading(fromSplitId, toSplitId));
+            this.startMultiThreadDownloading(fromSplitId, toSplitId);
         }
-
-        return results;
     }
 
-    private List<UsersResponse> startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {
+    public void startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {
         int usersPerThread = (toId - fromId + 1) / this.NUMBER_OF_THREADS;
-        List<Callable<UsersResponse>> tasks = new ArrayList<>();
+        List<Runnable> tasks = new ArrayList<>();
         ExecutorService executor = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
 
         for(int i = 0; i < this.NUMBER_OF_THREADS; i++){
             int threadFromId = fromId + i * usersPerThread;
             int threadToId = (i == this.NUMBER_OF_THREADS - 1) ? toId : threadFromId + usersPerThread - 1;
-            tasks.add(() -> this.pullUsersFromVkService(threadFromId, threadToId));
+            tasks.add(() -> {
+                var response = this.pullUsersFromVkService(threadFromId, threadToId);
+                this.config.restTemplate()
+                        .postForEntity(this.URL_KAFKA_SERVICE + "/bdInsertMessageBroker", response, Void.class);
+
+            });
         }
 
-        var responses = executor.invokeAll(tasks);
-        List<UsersResponse> results = new ArrayList<>();
-
-        for(var response: responses){
-            results.add(response.get());
+        for(var task: tasks){
+            executor.submit(task);
         }
 
         executor.shutdown();
-
-        return results;
     }
 
-    private UsersResponse pullUsersFromVkService(int fromId, int toId) {
+    public String pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
         String response = this.config.restTemplate()
-                .postForEntity(this.URL_VK_SERVICE, new UsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
+                .postForEntity(this.URL_VK_SERVICE, new vkUsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
                 .getBody();
 
-        return this.gson.fromJson(response, UsersResponse.class);
+        return response;
     }
 
-    private int[] getArrayOfIds(int firstId, int lastId){
+    public int[] getArrayOfIds(int firstId, int lastId){
         int sizeOfIdsArray = lastId - firstId + 1;
         int[] ids = new int[sizeOfIdsArray];
         int valueOfIdsArray = firstId;

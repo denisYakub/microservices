@@ -11,5 +11,8 @@
         <module name="pullingDataService.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="sortingDataService" target="23" />
+    </bytecodeTargetLevel>
   </component>
 </project>
