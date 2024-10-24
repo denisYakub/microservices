@@ -23,53 +23,33 @@ public class PullService {
     private String URL_KAFKA_SERVICE;
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
+    @Value("${global.CHUNK_SIZE}")
+    private int CHUNK_SIZE;
 
     private final String[] FIELDS_OF_USER_TO_GET = UserEntity.getListOfStringFields();
 
     public void startPulling(int fromId, int toId) {
         try{
-            this.splitAndStartMultiThreadDownloading(fromId, toId);
+            this.startMultiThreadDownloading(fromId, toId);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
     }
 
-    public void splitAndStartMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
-        int numberOfUsers = toId - fromId;
-        int step = this.NUMBER_OF_THREADS * 1000;
+    public void startMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
 
-        if(numberOfUsers < step){
-            throw new RuntimeException("Size of users should be more or equals " + step);
-        }
-
-        for(int i = 0; i < numberOfUsers / step; i++){
-            int fromSplitId = fromId + i * step;
-            int toSplitId = Math.min(fromSplitId + step, toId);
-            this.startMultiThreadDownloading(fromSplitId, toSplitId);
-        }
-    }
-
-    public void startMultiThreadDownloading(int fromId, int toId) throws InterruptedException, ExecutionException {
-        int usersPerThread = (toId - fromId + 1) / this.NUMBER_OF_THREADS;
-        List<Runnable> tasks = new ArrayList<>();
-        ExecutorService executor = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
-
-        for(int i = 0; i < this.NUMBER_OF_THREADS; i++){
-            int threadFromId = fromId + i * usersPerThread;
-            int threadToId = (i == this.NUMBER_OF_THREADS - 1) ? toId : threadFromId + usersPerThread - 1;
-            tasks.add(() -> {
-                var response = this.pullUsersFromVkService(threadFromId, threadToId);
+        for(int i = fromId; i <= toId; i += CHUNK_SIZE){
+            int IdFrom = i;
+            int idTo = Math.min(i + this.CHUNK_SIZE - 1, toId);
+            executorService.submit(() -> {
+                var response = this.pullUsersFromVkService(IdFrom, idTo);
                 this.config.restTemplate()
                         .postForEntity(this.URL_KAFKA_SERVICE + "/bdInsertMessageBroker", response, Void.class);
-
             });
         }
 
-        for(var task: tasks){
-            executor.submit(task);
-        }
-
-        executor.shutdown();
+        executorService.shutdown();
     }
 
     public String pullUsersFromVkService(int fromId, int toId) {
