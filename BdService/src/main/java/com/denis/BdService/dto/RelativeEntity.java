@@ -1,26 +1,31 @@
 package com.denis.BdService.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+@Table(name = "relatives")
 @Data
 @Entity
-@Table(name = "relatives")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class RelativeEntity {
+    private enum type{
+        child, sibling, parent, grandparent, grandchild
+    }
+
     @Id
-    @Column(unique = true)
-    public int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String name;
     private String type;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @Override
     public String toString() {

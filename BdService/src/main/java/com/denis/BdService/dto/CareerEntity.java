@@ -1,22 +1,19 @@
 package com.denis.BdService.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+@Table(name = "careers")
 @Data
 @Entity
-@Table(name = "careers")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CareerEntity {
     @Id
-    @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private int group_id;
@@ -29,6 +26,10 @@ public class CareerEntity {
     private int until;
 
     private String position;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @Override
     public String toString() {
