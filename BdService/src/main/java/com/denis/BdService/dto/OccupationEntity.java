@@ -13,14 +13,11 @@ import lombok.*;
 @NoArgsConstructor
 public class OccupationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(unique = true)
     private int id;
 
     private String name;
     private String type;
-
-    @OneToOne(mappedBy = "occupation")
-    private UserEntity user;
 
     @Override
     public String toString(){

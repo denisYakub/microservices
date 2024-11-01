@@ -61,9 +61,8 @@ public class UserEntity {
     @Nullable
     private CityEntity city;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "occupation_id", referencedColumnName = "id")
-    @Nullable
     private OccupationEntity occupation;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -133,11 +132,11 @@ public class UserEntity {
     }
 
     public boolean careerIsNull(){
-        return this.career.isEmpty();
+        return this.career == null;
     }
 
     public boolean relativeIsNull(){
-        return this.relatives.isEmpty();
+        return this.relatives == null;
     }
 
     public static String[] getListOfStringFields(){

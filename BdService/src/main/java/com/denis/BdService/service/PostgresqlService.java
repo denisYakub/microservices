@@ -27,7 +27,7 @@ public class PostgresqlService {
     @Autowired
     private OccupationRepository occupationRepository;
     @Autowired
-    private LanguageRepository languageRepository;
+    private CareerRepository careerRepository;
 
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
@@ -48,14 +48,24 @@ public class PostgresqlService {
             if (!user.cityIsNull()) {
                 CityEntity city = user.getCity();
                 CityEntity existingCity = this.cityRepository.findByTitle(city.getTitle());
+
                 if (existingCity != null) {
                     user.setCity(existingCity);
                 } else {
                     cityRepository.save(city);
                 }
             }
-            if(!user.occupationIsNull())
-                this.occupationRepository.save(user.getOccupation());
+
+            if(!user.occupationIsNull()){
+                OccupationEntity occupation = user.getOccupation();
+                var existingOccupation = this.occupationRepository.findById(occupation.getId());
+
+                if(existingOccupation.isPresent()){
+                    user.setOccupation(existingOccupation.get());
+                }else {
+                    occupationRepository.save(occupation);
+                }
+            }
 
             if(!user.careerIsNull()){
                 for(var career: user.getCareer())
@@ -67,17 +77,15 @@ public class PostgresqlService {
                     relative.setUser(user);
             }
 
-            if(!user.personalIsNull()) {
-                if(!user.getPersonal().isLangsFullNull()){
-                    var langs = user.getPersonal().getLangs_full();
-
-                    for(var lang: langs){
-                        lang.setPersonal(user.getPersonal());
-                    }
-                }
+            if(!user.personalIsNull())
                 this.personalRepository.save(user.getPersonal());
-            }
         }
         userRepository.saveAll(users);
+    }
+
+    @Transactional
+    public void deleteUsers(FieldsToDeleteBy fields){
+        //this.careerRepository.;
+        this.userRepository.deleteUsersByDynamicFields(fields.getListOfFields());
     }
 }
