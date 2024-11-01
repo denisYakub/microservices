@@ -4,24 +4,21 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
+@Table(name = "users")
 @Data
 @Entity
-@Table(name = "users")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserEntity {
     @Id
     @Column(unique = true)
     private int id;
 
-    private String first_name;
-    private String last_name;
     private boolean can_access_closed;
     private boolean is_closed;
 
@@ -30,12 +27,19 @@ public class UserEntity {
     private int verified;
     private int has_photo;
     private int sex;
+    private int university;
+    private int faculty;
+    private int graduation;
 
+    private String first_name;
+    private String last_name;
     private String nickname;
     private String home_town;
     private String maiden_name;
     private String screen_name;
     private String bdate;
+    private String university_name;
+    private String faculty_name;
 
     @Column(columnDefinition = "TEXT")
     private String about;
@@ -57,73 +61,82 @@ public class UserEntity {
     @Nullable
     private CityEntity city;
 
-    /*@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "country_id", referencedColumnName = "id")
-    @Nullable
-    private CountryEntity country;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "occupation_id", referencedColumnName = "id")
+    private OccupationEntity occupation;
 
-    private EducationEntity education;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CareerEntity> career;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "contact_id", referencedColumnName = "id")
-    @Nullable
-    private ContactEntity contacts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<RelativeEntity> relatives;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "counter_id", referencedColumnName = "id")
-    @Nullable
-    private CounterEntity counters;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_id", referencedColumnName = "id")
-    @Nullable
-    private PersonalEntity personal;*/
-
-    /*@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "career_id", referencedColumnName = "id")
-    private Set<CareerEntity> career;*/
-
-    /*@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "relatives_id", referencedColumnName = "id")
-    private ArrayList<RelativeEntity> relatives;*/
+    private PersonalEntity personal;
 
     @Override
     public String toString() {
         return "{" +
                 "\"id\":" + "\"" + id + "\"" +
+                ", \"nickname\":" + "\"" + nickname + "\"" +
+                ", \"bdate\":" + "\"" + bdate + "\"" +
+                ", \"city\":" + "\"" + city + "\"" +
+                ", \"has_photo\":" + "\"" + has_photo + "\"" +
+                ", \"books\":" + "\"" + books + "\"" +
+                ", \"about\":" + "\"" + about + "\"" +
+                ", \"games\":" + "\"" + games + "\"" +
+                ", \"movies\":" + "\"" + movies + "\"" +
+                ", \"activities\":" + "\"" + activities + "\"" +
+                ", \"music\":" + "\"" + music + "\"" +
+                ", \"site\":" + "\"" + site + "\"" +
+
+                ", \"occupation\":" + "\"" + occupation + "\"" +
+
+                ", \"career\":" + "\"" + career + "\"" +
+
+                ", \"university\":" + "\"" + university + "\"" +
+                ", \"university_name\":" + "\"" + university_name + "\"" +
+                ", \"faculty\":" + "\"" + faculty + "\"" +
+                ", \"faculty_name\":" + "\"" + faculty_name + "\"" +
+                ", \"graduation\":" + "\"" + graduation + "\"" +
+
+                ", \"home_town\":" + "\"" + home_town + "\"" +
+                ", \"relation\":" + "\"" + relation + "\"" +
+
+
+                ", \"personal\":" + "\"" + personal + "\"" +
+
+                ", \"relatives\":" + "\"" + relatives + "\"" +
+
+                ", \"sex\":" + "\"" + sex + "\"" +
+                ", \"screen_name\":" + "\"" + screen_name + "\"" +
+                ", \"verified\":" + "\"" + verified + "\"" +
                 ", \"first_name\":" + "\"" + first_name + "\"" +
                 ", \"last_name\":" + "\"" + last_name + "\"" +
                 ", \"can_access_closed\":" + "\"" + can_access_closed + "\"" +
                 ", \"is_closed\":" + "\"" + is_closed + "\"" +
-                ", \"about\":" + "\"" + about + "\"" +
-                ", \"activities\":" + "\"" + activities + "\"" +
-                ", \"bdate\":" + "\"" + bdate + "\"" +
-                ", \"books\":" + "\"" + books + "\"" +
-                ", \"relation\":" + "\"" + relation + "\"" +
-                ", \"verified\":" + "\"" + verified + "\"" +
-                ", \"screen_name\":" + "\"" + screen_name + "\"" +
-                ", \"sex\":" + "\"" + sex + "\"" +
-                ", \"site\":" + "\"" + site + "\"" +
-                ", \"movies\":" + "\"" + movies + "\"" +
-                ", \"music\":" + "\"" + music + "\"" +
-                ", \"nickname\":" + "\"" + nickname + "\"" +
-                ", \"has_photo\":" + "\"" + has_photo + "\"" +
-                ", \"home_town\":" + "\"" + home_town + "\"" +
-                ", \"maiden_name\":" + "\"" + maiden_name + "\"" +
-                ", \"games\":" + "\"" + games + "\"" +
-                ", \"city\":" + "\"" + city + "\"" +
-                //", \"country\":" + "\"" + country + "\"" +
-                //", \"career\":" + "\"" + career + "\"" +
-                //", \"contacts\":" + "\"" + contacts + "\"" +
-                //", \"counters\":" + "\"" + counters + "\"" +
-                //", \"education\":" + "\"" + education + "\"" +
-                //", \"personal\":" + "\"" + personal + "\"" +
-                //", \"relatives\":" + "\"" + relatives + "\"" +
                 '}';
     }
 
     public boolean cityIsNull(){
         return this.city == null;
+    }
+
+    public boolean occupationIsNull(){
+        return this.occupation == null;
+    }
+
+    public boolean personalIsNull(){
+        return this.personal == null;
+    }
+
+    public boolean careerIsNull(){
+        return this.career == null;
+    }
+
+    public boolean relativeIsNull(){
+        return this.relatives == null;
     }
 
     public static String[] getListOfStringFields(){

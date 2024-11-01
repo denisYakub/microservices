@@ -23,15 +23,11 @@ public class PostgresqlService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private CountryRepository countryRepository;
-    @Autowired
-    private EducationRepository educationRepository;
-    @Autowired
-    private ContactRepository contactRepository;
-    @Autowired
-    private CountersRepository countersRepository;
-    @Autowired
     private PersonalRepository personalRepository;
+    @Autowired
+    private OccupationRepository occupationRepository;
+    @Autowired
+    private CareerRepository careerRepository;
 
     @Value("${global.numberOfThreads}")
     private int NUMBER_OF_THREADS;
@@ -47,17 +43,49 @@ public class PostgresqlService {
 
     @Transactional
     private void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
+        //TODO оптимизировать
         for (UserEntity user : users) {
             if (!user.cityIsNull()) {
                 CityEntity city = user.getCity();
                 CityEntity existingCity = this.cityRepository.findByTitle(city.getTitle());
+
                 if (existingCity != null) {
                     user.setCity(existingCity);
                 } else {
                     cityRepository.save(city);
                 }
             }
+
+            if(!user.occupationIsNull()){
+                OccupationEntity occupation = user.getOccupation();
+                var existingOccupation = this.occupationRepository.findById(occupation.getId());
+
+                if(existingOccupation.isPresent()){
+                    user.setOccupation(existingOccupation.get());
+                }else {
+                    occupationRepository.save(occupation);
+                }
+            }
+
+            if(!user.careerIsNull()){
+                for(var career: user.getCareer())
+                    career.setUser(user);
+            }
+
+            if(!user.relativeIsNull()){
+                for (var relative: user.getRelatives())
+                    relative.setUser(user);
+            }
+
+            if(!user.personalIsNull())
+                this.personalRepository.save(user.getPersonal());
         }
         userRepository.saveAll(users);
+    }
+
+    @Transactional
+    public void deleteUsers(FieldsToDeleteBy fields){
+        //this.careerRepository.;
+        this.userRepository.deleteUsersByDynamicFields(fields.getListOfFields());
     }
 }

@@ -1,12 +1,9 @@
 package com.denis.BdService.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -18,28 +15,35 @@ import java.util.ArrayList;
 @Builder
 public class PersonalEntity {
     @Id
-    public int id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int id;
+
+    private int alcohol;
+    private String inspired_by;
+
+    private List<String> langs;
+
+    private int life_main;
+    private int people_main;
 
     private int political;
-    private ArrayList<String> langs;
     private String religion;
-    private String inspired_by;
-    private int people_main;
-    private int life_main;
     private int smoking;
-    private int alcohol;
+
+    @OneToOne(mappedBy = "personal")
+    private UserEntity user;
 
     @Override
     public String toString() {
         return "{" +
+                ", \"alcohol\":" + "\"" + alcohol + "\"" +
+                ", \"inspired_by\":" + "\"" + inspired_by + "\"" +
+                ", \"langs\":" + "\"" + langs.toString() + "\"" +
+                ", \"life_main\":" + "\"" + life_main + "\"" +
+                ", \"people_main\":" + "\"" + people_main + "\"" +
                 ", \"political\":" + "\"" + political + "\"" +
                 ", \"religion\":" + "\"" + religion + "\"" +
-                ", \"inspired_by\":" + "\"" + inspired_by + "\"" +
-                ", \"people_main\":" + "\"" + people_main + "\"" +
-                ", \"life_main\":" + "\"" + life_main + "\"" +
                 ", \"smoking\":" + "\"" + smoking + "\"" +
-                ", \"alcohol\":" + "\"" + alcohol + "\"" +
-                ", \"langs\":" + "\"" + langs.toString() + "\"" +
                 '}';
     }
 }
