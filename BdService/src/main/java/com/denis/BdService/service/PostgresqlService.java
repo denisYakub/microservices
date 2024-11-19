@@ -29,7 +29,7 @@ public class PostgresqlService {
     @Autowired
     private CareerRepository careerRepository;
 
-    @Value("${global.numberOfThreads}")
+    @Value("${application.numberOfThreads}")
     private int NUMBER_OF_THREADS;
 
     public void saveUsersRequest(String usersRequestJson){
