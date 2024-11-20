@@ -23,7 +23,7 @@ public class OccupationEntity {
     public String toString(){
         return "{" +
                 "\"name\":" + "\"" + name + "\"" +
-                "\"type\":" + "\"" + type + "\"" +
+                ", \"type\":" + "\"" + type + "\"" +
                 "}";
     }
 }

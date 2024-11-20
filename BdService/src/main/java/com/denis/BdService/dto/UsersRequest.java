@@ -1,9 +1,6 @@
 package com.denis.BdService.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,13 +8,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UsersRequest {
 
     private List<UserEntity> response;
 
     @Override
     public String toString() {
-        return response.toString();
+        return "{\"response\":" + String.join("} ,{", response.toString()) + "}";
     }
 
     public int getCountOfUsers(){

@@ -36,9 +36,9 @@ public class PersonalEntity {
     @Override
     public String toString() {
         return "{" +
-                ", \"alcohol\":" + "\"" + alcohol + "\"" +
+                "\"alcohol\":" + "\"" + alcohol + "\"" +
                 ", \"inspired_by\":" + "\"" + inspired_by + "\"" +
-                ", \"langs\":" + "\"" + langs.toString() + "\"" +
+                ", \"langs\":" + "[\"" + String.join("\", \"", langs) + "\"]" +
                 ", \"life_main\":" + "\"" + life_main + "\"" +
                 ", \"people_main\":" + "\"" + people_main + "\"" +
                 ", \"political\":" + "\"" + political + "\"" +

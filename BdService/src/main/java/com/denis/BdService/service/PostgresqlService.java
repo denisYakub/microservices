@@ -14,23 +14,23 @@ import java.util.List;
 
 
 @Service
-@RequiredArgsConstructor()
+@RequiredArgsConstructor
 public class PostgresqlService {
     @Autowired
-    private final Gson gson;
+    public final Gson gson;
     @Autowired
-    private CityRepository cityRepository;
+    public CityRepository cityRepository;
     @Autowired
-    private UserRepository userRepository;
+    public UserRepository userRepository;
     @Autowired
-    private PersonalRepository personalRepository;
+    public PersonalRepository personalRepository;
     @Autowired
-    private OccupationRepository occupationRepository;
+    public OccupationRepository occupationRepository;
     @Autowired
-    private CareerRepository careerRepository;
+    public CareerRepository careerRepository;
 
     @Value("${application.numberOfThreads}")
-    private int NUMBER_OF_THREADS;
+    public int NUMBER_OF_THREADS;
 
     public void saveUsersRequest(String usersRequestJson){
         try{
@@ -42,7 +42,7 @@ public class PostgresqlService {
     }
 
     @Transactional
-    private void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
+    public void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
         //TODO оптимизировать
         for (UserEntity user : users) {
             if (!user.cityIsNull()) {

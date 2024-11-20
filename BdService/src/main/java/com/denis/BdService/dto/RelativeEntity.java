@@ -30,7 +30,7 @@ public class RelativeEntity {
     @Override
     public String toString() {
         return "{" +
-                "\"id\":" + "\"" + id + "\"" +
+                "\"id_relative\":" + "\"" + id + "\"" +
                 ", \"name\":" + "\"" + name + "\"" +
                 ", \"type\":" + "\"" + type + "\"" +
                 '}';
