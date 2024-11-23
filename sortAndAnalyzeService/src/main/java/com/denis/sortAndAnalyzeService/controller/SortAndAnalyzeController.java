@@ -12,9 +12,21 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class SortAndAnalyzeController {
     @Autowired
-    private SortService sortService;
+    public SortService sortService;
     @Autowired
-    private AnalyzeService analyzeService;
+    public AnalyzeService analyzeService;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public String getUser(@PathVariable int id){
+        return this.analyzeService.getUserEntityById(id).toString();
+    }
+
+    @PostMapping("/checkForBots/{numberOfUsers}")
+    @ResponseStatus(HttpStatus.OK)
+    public int[] findBots(@PathVariable int numberOfUsers){
+        return this.analyzeService.analyzeUsersForBots(numberOfUsers).stream().mapToInt(Integer::intValue).toArray();
+    }
 
     @DeleteMapping("/cleanUsersWithClosedAcc")
     @ResponseStatus(HttpStatus.OK)

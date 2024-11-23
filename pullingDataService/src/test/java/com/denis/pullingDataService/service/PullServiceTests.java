@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -22,9 +23,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class PullServiceTests {
-    @Mock
-    private RestTemplate restTemplate;
-    @InjectMocks
+    @MockBean
     private PullService pullService;
 
     private final int threads = 8;
@@ -46,7 +45,12 @@ public class PullServiceTests {
 
     @Test
     public void test_startMultiThreadDownloading_method(){
+        when(pullService.postRequest(anyString(), any(), any())).thenReturn(ResponseEntity.ok("response"));
+        doCallRealMethod().when(pullService).startMultiThreadDownloading(anyInt(), anyInt());
 
+        pullService.startMultiThreadDownloading(0, 1000);
+
+        verify(pullService, atLeastOnce()).postRequest(anyString(), any(), any());
     }
 
     @Test
@@ -63,12 +67,9 @@ public class PullServiceTests {
 
     @BeforeEach
     public void setUp(){
-        MockitoAnnotations.openMocks(this);
-
         ReflectionTestUtils.setField(pullService, "URL_VK_SERVICE", mocked_url);
         ReflectionTestUtils.setField(pullService, "URL_KAFKA_SERVICE", mocked_url);
         ReflectionTestUtils.setField(pullService, "NUMBER_OF_THREADS", threads);
         ReflectionTestUtils.setField(pullService, "CHUNK_SIZE", chunk);
-
     }
 }

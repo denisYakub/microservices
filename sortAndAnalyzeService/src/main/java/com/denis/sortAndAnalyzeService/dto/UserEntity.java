@@ -1,22 +1,14 @@
-package com.denis.BdService.dto;
-
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+package com.denis.sortAndAnalyzeService.dto;
 import lombok.*;
 
 import java.util.List;
 
-@Table(name = "users")
-@Data
-@Entity
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
-    @Id
-    @Column(unique = true)
     private int id;
 
     private boolean can_access_closed;
@@ -34,48 +26,29 @@ public class UserEntity {
     private String first_name;
     private String last_name;
     private String nickname;
+    private String home_town;
     private String maiden_name;
     private String screen_name;
     private String bdate;
-
-    @Column(columnDefinition = "TEXT")
-    private String home_town;
-    @Column(columnDefinition = "TEXT")
     private String university_name;
-    @Column(columnDefinition = "TEXT")
     private String faculty_name;
-    @Column(columnDefinition = "TEXT")
+
     private String about;
-    @Column(columnDefinition = "TEXT")
     private String activities;
-    @Column(columnDefinition = "TEXT")
     private String books;
-    @Column(columnDefinition = "TEXT")
     private String site;
-    @Column(columnDefinition = "TEXT")
     private String movies;
-    @Column(columnDefinition = "TEXT")
     private String music;
-    @Column(columnDefinition = "TEXT")
     private String games;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    @Nullable
     private CityEntity city;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "occupation_id", referencedColumnName = "id")
     private OccupationEntity occupation;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CareerEntity> career;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RelativeEntity> relatives;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "personal_id", referencedColumnName = "id")
     private PersonalEntity personal;
 
     @Override

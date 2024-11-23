@@ -1,37 +1,29 @@
-package com.denis.BdService.dto;
+package com.denis.sortAndAnalyzeService.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
 
-@Data
-@Entity
-@Table(name = "personals")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class PersonalEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     private int alcohol;
-    private int life_main;
-    private int people_main;
-    private int political;
-    private int smoking;
-
-    @Column(columnDefinition = "TEXT")
     private String inspired_by;
-    @Column(columnDefinition = "TEXT")
-    private String religion;
 
     private List<String> langs;
 
-    @OneToOne(mappedBy = "personal")
+    private int life_main;
+    private int people_main;
+
+    private int political;
+    private String religion;
+    private int smoking;
+
     private UserEntity user;
 
     @Override
