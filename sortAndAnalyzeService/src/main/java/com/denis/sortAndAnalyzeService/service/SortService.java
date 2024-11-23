@@ -15,7 +15,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class SortService {
-    @Value("${global.URL_BD_SERVICE}")
+    @Value("${application.URL_BD_SERVICE}")
     private String URL_BD_SERVICE;
 
     public void deleteUsersWithClosedAccount(){

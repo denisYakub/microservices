@@ -13,17 +13,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Service
-@RequiredArgsConstructor
 public class VkService {
-    @Autowired
-    private final Gson gson;
+    @Value("${application.ACCESS_TOKEN}")
+    public String ACCESS_TOKEN;
+    @Value("${application.APP_ID}")
+    public int APP_ID;
 
-    private final HttpClient client = HttpClient.newHttpClient();
-
-    @Value("${global.ACCESS_TOKEN}")
-    private String ACCESS_TOKEN;
-    @Value("${global.APP_ID}")
-    private int APP_ID;
+    public final HttpClient client = HttpClient.newHttpClient();
 
     public String getAccessTokenForVkRequests() {
         HttpRequest request = HttpRequest.newBuilder()
@@ -42,28 +38,24 @@ public class VkService {
 
     public String getUsersBasicInfoFromVkApiBy(String ids, String fields){
         try {
-            return this.vkApiMethodUsersGet(ids, fields);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(
+                            URI.create("https://api.vk.com/method/users.get" +
+                                    "?access_token=" + this.ACCESS_TOKEN +
+                                    "&user_ids=" + ids +
+                                    "&fields=" + fields +
+                                    "&v=5.199")
+                    ).GET().build();
+
+            var response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+            if(response.contains("error_msg")){
+                throw new Exception(response);
+            }
+
+            return response;
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-    private String vkApiMethodUsersGet(String userIds, String fields) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(
-                        URI.create("https://api.vk.com/method/users.get" +
-                                "?access_token=" + this.ACCESS_TOKEN +
-                                "&user_ids=" + userIds +
-                                "&fields=" + fields +
-                                "&v=5.199")
-                ).GET().build();
-
-        var response = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-        if(response.contains("error_msg")){
-            throw new RuntimeException(response);
-        }
-
-        return response;
     }
 }

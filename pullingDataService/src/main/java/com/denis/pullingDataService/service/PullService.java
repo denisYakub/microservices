@@ -1,50 +1,54 @@
 package com.denis.pullingDataService.service;
 
 import com.denis.pullingDataService.configuration.Config;
-import com.denis.pullingDataService.dto.UserEntity;
 import com.denis.pullingDataService.dto.vkUsersRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
 import java.util.concurrent.*;
 
 @Service
 @RequiredArgsConstructor
 public class PullService {
-    @Autowired
-    public final Config config;
+    @Value("${application.URL_VK_SERVICE}")
+    public String URL_VK_SERVICE;
+    @Value("${application.URL_KAFKA_SERVICE}")
+    public String URL_KAFKA_SERVICE;
+    @Value("${application.NUMBER_OF_THREADS}")
+    public int NUMBER_OF_THREADS;
+    @Value("${application.CHUNK_SIZE}")
+    public int CHUNK_SIZE;
 
-    @Value("${global.URL_VK_SERVICE}")
-    private String URL_VK_SERVICE;
-    @Value("${global.URL_KAFKA_SERVICE}")
-    private String URL_KAFKA_SERVICE;
-    @Value("${global.numberOfThreads}")
-    private int NUMBER_OF_THREADS;
-    @Value("${global.CHUNK_SIZE}")
-    private int CHUNK_SIZE;
-
-    private final String[] FIELDS_OF_USER_TO_GET = UserEntity.getListOfStringFields();
+    public final String[] FIELDS_OF_USER_TO_GET = new String[]{"about", "activities",
+            "bdate", "books",
+            "relation", "relatives",
+            "verified",
+            "screen_name", "sex", "site",
+            "movies", "music",
+            "nickname",
+            "has_photo", "home_town",
+            "maiden_name", "military",
+            "games",
+            "city", "career", "connections", "contacts", "counters", "country",
+            "education",
+            "occupation",
+            "personal"
+    };
 
     public void startPulling(int fromId, int toId) {
-        try{
-            this.startMultiThreadDownloading(fromId, toId);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e.getCause());
-        }
+        this.startMultiThreadDownloading(fromId, toId);
     }
 
-    public void startMultiThreadDownloading(int fromId, int toId) throws ExecutionException, InterruptedException {
+    public void startMultiThreadDownloading(int fromId, int toId) {
         ExecutorService executorService = Executors.newFixedThreadPool(this.NUMBER_OF_THREADS);
-
         for(int i = fromId; i <= toId; i += CHUNK_SIZE){
             int IdFrom = i;
             int idTo = Math.min(i + this.CHUNK_SIZE - 1, toId);
             executorService.submit(() -> {
                 var response = this.pullUsersFromVkService(IdFrom, idTo);
-                this.config.restTemplate()
+                Config.restTemplate()
                         .postForEntity(this.URL_KAFKA_SERVICE + "/bdInsertMessageBroker", response, Void.class);
             });
         }
@@ -54,11 +58,10 @@ public class PullService {
 
     public String pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
-        String response = this.config.restTemplate()
+
+        return Config.restTemplate()
                 .postForEntity(this.URL_VK_SERVICE, new vkUsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
                 .getBody();
-
-        return response;
     }
 
     public int[] getArrayOfIds(int firstId, int lastId){

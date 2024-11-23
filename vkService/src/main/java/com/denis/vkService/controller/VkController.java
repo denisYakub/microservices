@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class VkController {
     @Autowired
-    private final VkService vkService;
+    public final VkService vkService;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)

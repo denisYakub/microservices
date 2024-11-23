@@ -24,7 +24,7 @@ public class CityEntity{
     @Override
     public String toString() {
         return "{" +
-                "\"id\":" + "\"" + id + "\"" +
+                "\"id_city\":" + "\"" + id + "\"" +
                 ", \"title\":" + "\"" + title + "\"" +
                 '}';
     }

@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
-    @Value("${global.URL_BD_SERVICE}")
+    @Value("${application.URL_BD_SERVICE}")
     private String URL_BD_SERVICE;
 
     @Autowired

@@ -81,7 +81,7 @@ public class UserEntity {
                 "\"id\":" + "\"" + id + "\"" +
                 ", \"nickname\":" + "\"" + nickname + "\"" +
                 ", \"bdate\":" + "\"" + bdate + "\"" +
-                ", \"city\":" + "\"" + city + "\"" +
+                ", \"city\":" + city +
                 ", \"has_photo\":" + "\"" + has_photo + "\"" +
                 ", \"books\":" + "\"" + books + "\"" +
                 ", \"about\":" + "\"" + about + "\"" +
@@ -90,25 +90,17 @@ public class UserEntity {
                 ", \"activities\":" + "\"" + activities + "\"" +
                 ", \"music\":" + "\"" + music + "\"" +
                 ", \"site\":" + "\"" + site + "\"" +
-
-                ", \"occupation\":" + "\"" + occupation + "\"" +
-
-                ", \"career\":" + "\"" + career + "\"" +
-
+                ", \"occupation\":" + occupation +
+                ", \"career\":" + career +
                 ", \"university\":" + "\"" + university + "\"" +
                 ", \"university_name\":" + "\"" + university_name + "\"" +
                 ", \"faculty\":" + "\"" + faculty + "\"" +
                 ", \"faculty_name\":" + "\"" + faculty_name + "\"" +
                 ", \"graduation\":" + "\"" + graduation + "\"" +
-
                 ", \"home_town\":" + "\"" + home_town + "\"" +
                 ", \"relation\":" + "\"" + relation + "\"" +
-
-
-                ", \"personal\":" + "\"" + personal + "\"" +
-
-                ", \"relatives\":" + "\"" + relatives + "\"" +
-
+                ", \"personal\":"+ personal +
+                ", \"relatives\":" + relatives +
                 ", \"sex\":" + "\"" + sex + "\"" +
                 ", \"screen_name\":" + "\"" + screen_name + "\"" +
                 ", \"verified\":" + "\"" + verified + "\"" +
