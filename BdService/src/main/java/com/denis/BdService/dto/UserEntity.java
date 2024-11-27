@@ -22,7 +22,6 @@ public class UserEntity {
     private boolean can_access_closed;
     private boolean is_closed;
 
-
     private int relation;
     private int verified;
     private int has_photo;
@@ -59,22 +58,22 @@ public class UserEntity {
     @Column(columnDefinition = "TEXT")
     private String games;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     @Nullable
     private CityEntity city;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "occupation_id", referencedColumnName = "id")
     private OccupationEntity occupation;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<CareerEntity> career;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<RelativeEntity> relatives;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_id", referencedColumnName = "id")
     private PersonalEntity personal;
 
@@ -84,7 +83,7 @@ public class UserEntity {
                 "\"id\":" + "\"" + id + "\"" +
                 ", \"nickname\":" + "\"" + nickname + "\"" +
                 ", \"bdate\":" + "\"" + bdate + "\"" +
-                ", \"city\":" + city +
+                ", \"city\":" + (city != null ? city.toString() : "null") +
                 ", \"has_photo\":" + "\"" + has_photo + "\"" +
                 ", \"books\":" + "\"" + books + "\"" +
                 ", \"about\":" + "\"" + about + "\"" +
@@ -93,8 +92,8 @@ public class UserEntity {
                 ", \"activities\":" + "\"" + activities + "\"" +
                 ", \"music\":" + "\"" + music + "\"" +
                 ", \"site\":" + "\"" + site + "\"" +
-                ", \"occupation\":" + occupation +
-                ", \"career\":" + career +
+                ", \"occupation\":" + (occupation != null ? occupation.toString() : "null") +
+                ", \"career\":" + (career != null ? career.toString() : "null") +
                 ", \"university\":" + "\"" + university + "\"" +
                 ", \"university_name\":" + "\"" + university_name + "\"" +
                 ", \"faculty\":" + "\"" + faculty + "\"" +
@@ -102,8 +101,8 @@ public class UserEntity {
                 ", \"graduation\":" + "\"" + graduation + "\"" +
                 ", \"home_town\":" + "\"" + home_town + "\"" +
                 ", \"relation\":" + "\"" + relation + "\"" +
-                ", \"personal\":"+ personal +
-                ", \"relatives\":" + relatives +
+                ", \"personal\":"+ (personal != null ? personal.toString() : "null") +
+                ", \"relatives\":" + (relatives != null ? relatives.toString() : "null") +
                 ", \"sex\":" + "\"" + sex + "\"" +
                 ", \"screen_name\":" + "\"" + screen_name + "\"" +
                 ", \"verified\":" + "\"" + verified + "\"" +

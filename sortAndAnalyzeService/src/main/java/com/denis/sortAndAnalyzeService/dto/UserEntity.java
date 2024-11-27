@@ -1,6 +1,8 @@
 package com.denis.sortAndAnalyzeService.dto;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -105,6 +107,16 @@ public class UserEntity {
 
     public boolean relativeIsNull(){
         return this.relatives == null;
+    }
+
+    public int GetAge(){
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.M.yyyy");
+
+            return (2024 - LocalDate.parse(this.bdate, formatter).getYear());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     public static String[] getListOfStringFields(){

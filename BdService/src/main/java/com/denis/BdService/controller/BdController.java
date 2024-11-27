@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/bd")
 @AllArgsConstructor
@@ -18,7 +20,13 @@ public class BdController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public String getUser(@PathVariable int id){
-        return this.postgresqlService.getUser(id).toString();
+        return this.postgresqlService.getUser(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserEntity> getAllUsers(){
+        return this.postgresqlService.getAllUsers();
     }
 
     @PostMapping

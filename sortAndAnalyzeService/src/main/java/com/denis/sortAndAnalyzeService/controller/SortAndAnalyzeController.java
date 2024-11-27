@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutorService;
+
 @RestController
 @RequestMapping("/api/sortAnalyze")
 @AllArgsConstructor
@@ -16,16 +18,14 @@ public class SortAndAnalyzeController {
     @Autowired
     public AnalyzeService analyzeService;
 
-    @GetMapping("/{id}")
+    @PostMapping("/{from}/{till}")
     @ResponseStatus(HttpStatus.OK)
-    public String getUser(@PathVariable int id){
-        return this.analyzeService.getUserEntityById(id).toString();
-    }
-
-    @PostMapping("/checkForBots/{numberOfUsers}")
-    @ResponseStatus(HttpStatus.OK)
-    public int[] findBots(@PathVariable int numberOfUsers){
-        return this.analyzeService.analyzeUsersForBots(numberOfUsers).stream().mapToInt(Integer::intValue).toArray();
+    public String findBots(@PathVariable int from, @PathVariable int till){
+        try {
+            return this.analyzeService.UseMultiThreadToAnalyze(from, till);
+        } catch (Exception e) {
+            return "threads error";
+        }
     }
 
     @DeleteMapping("/cleanUsersWithClosedAcc")

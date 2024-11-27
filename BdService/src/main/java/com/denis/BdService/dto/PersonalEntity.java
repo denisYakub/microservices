@@ -39,7 +39,7 @@ public class PersonalEntity {
         return "{" +
                 "\"alcohol\":" + "\"" + alcohol + "\"" +
                 ", \"inspired_by\":" + "\"" + inspired_by + "\"" +
-                ", \"langs\":" + "[\"" + String.join("\", \"", langs) + "\"]" +
+                ", \"langs\":" + "[\"" + (langs != null ? String.join("\", \"", langs) : "null") + "\"]" +
                 ", \"life_main\":" + "\"" + life_main + "\"" +
                 ", \"people_main\":" + "\"" + people_main + "\"" +
                 ", \"political\":" + "\"" + political + "\"" +
