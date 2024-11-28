@@ -16,4 +16,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer>, User
     @Transactional
     @Query("DELETE FROM UserEntity u WHERE u.id IN :users_id")
     void deleteByUserId(@Param("users_id") List<Integer> users_id);
+
+    @Modifying
+    @Transactional
+    @Query("SELECT u FROM UserEntity u WHERE u.id BETWEEN :startId AND :endId")
+    List<UserEntity> findUsersByIdRange(@Param("startId") int startId, @Param("endId") int endId);
 }

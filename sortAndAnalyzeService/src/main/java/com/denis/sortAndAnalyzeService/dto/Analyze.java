@@ -25,34 +25,11 @@ public class Analyze {
     public int count_of_processed_followers = 0;
     public int count_of_processed_migration = 0;
 
-    /*private int count_of_android_users = 0;
-    private int count_of_iphone_users = 0;
-    private int count_of_descTop_users = 0;
-
-    private int count_of_t10y_users = 0;
-    private int count_of_t20y_users = 0;
-    private int count_of_t30y_users = 0;
-    private int count_of_t40y_users = 0;
-    private int count_of_t60y_users = 0;
-    private int count_of_t100y_users = 0;*/
-
     public int count_of_migrated_users = 0;
 
-    //private final Map<Integer, Integer> platform_to_age_sum = new HashMap<>();
-    //private final Map<Integer, Integer> age_to_followers_sum = new HashMap<>();
     private final Map<Integer, Integer[]> age_to_followers_sum_platform_sum = new HashMap<>();
 
     public Analyze(){
-        /*platform_to_age_sum.put(2, 0);
-        platform_to_age_sum.put(4, 0);
-        platform_to_age_sum.put(7, 0);
-
-        age_to_followers_sum.put(10, 0);
-        age_to_followers_sum.put(20, 0);
-        age_to_followers_sum.put(30, 0);
-        age_to_followers_sum.put(40, 0);
-        age_to_followers_sum.put(60, 0);
-        age_to_followers_sum.put(100, 0);*/
 
         age_to_followers_sum_platform_sum.put(10, new Integer[]{0, 0, 0, 0});
         age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0});
@@ -76,23 +53,15 @@ public class Analyze {
         var val = this.age_to_followers_sum_platform_sum.get(_age);
 
         if(platform == platforms.android.id){
-            //this.count_of_android_users++;
             val[1]++;
         } else if (platform == platforms.iphone.id) {
-            //this.count_of_iphone_users++;
             val[2]++;
         } else if (platform == platforms.descTop.id) {
-            //this.count_of_descTop_users++;
             val[3]++;
         } else {
-            //System.out.println("This platform doesn't count: " + platform + "\n");
             return;
         }
         this.count_of_processed_platforms++;
-        /*this.platform_to_age_sum.put(
-                platform,
-                this.platform_to_age_sum.get(platform) + age
-        );*/
         this.age_to_followers_sum_platform_sum.put(
                 _age,
                 val
@@ -101,11 +70,6 @@ public class Analyze {
 
     public void increaseFollowers(int age, int followers){
         if(age <= 10){
-            /*this.count_of_t10y_users++;
-            this.age_to_followers_sum.put(
-                    10,
-                    this.age_to_followers_sum.get(10) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(10);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -113,11 +77,6 @@ public class Analyze {
                     val
             );
         } else if(age <= 20){
-            /*this.count_of_t20y_users++;
-            this.age_to_followers_sum.put(
-                    20,
-                    this.age_to_followers_sum.get(20) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(20);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -125,11 +84,6 @@ public class Analyze {
                     val
             );
         } else if(age <= 30){
-            /*this.count_of_t30y_users++;
-            this.age_to_followers_sum.put(
-                    30,
-                    this.age_to_followers_sum.get(30) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(30);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -137,11 +91,6 @@ public class Analyze {
                     val
             );
         } else if(age <= 40){
-            /*this.count_of_t40y_users++;
-            this.age_to_followers_sum.put(
-                    40,
-                    this.age_to_followers_sum.get(40) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(40);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -149,11 +98,6 @@ public class Analyze {
                     val
             );
         } else if(age <= 60){
-            /*this.count_of_t60y_users++;
-            this.age_to_followers_sum.put(
-                    60,
-                    this.age_to_followers_sum.get(60) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(60);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -161,11 +105,6 @@ public class Analyze {
                     val
             );
         } else if(age <= 100){
-            /*this.count_of_t100y_users++;
-            this.age_to_followers_sum.put(
-                    100,
-                    this.age_to_followers_sum.get(100) + followers
-            );*/
             var val = this.age_to_followers_sum_platform_sum.get(100);
             val[0]++;
             this.age_to_followers_sum_platform_sum.put(
@@ -183,59 +122,6 @@ public class Analyze {
             return 0;
         return ( this.sum_of_completeness_accounts / this.count_of_accounts_for_completeness );
     }
-
-    /*public int averageAgeOfAndroidUser(){
-        if (this.count_of_android_users == 0)
-            return 0;
-        return ( this.platform_to_age_sum.get(platforms.android.id) / this.count_of_android_users );
-    }
-
-    public int averageAgeOfIphoneUser(){
-        if (this.count_of_iphone_users == 0)
-            return 0;
-        return ( this.platform_to_age_sum.get(platforms.iphone.id) / this.count_of_iphone_users );
-    }
-
-    public int averageAgeOfDescTopUser(){
-        if (this.count_of_descTop_users == 0)
-            return 0;
-        return ( this.platform_to_age_sum.get(platforms.descTop.id) / this.count_of_descTop_users );
-    }
-
-    public int averageFollowersCountFor10YO(){
-        if (this.count_of_t10y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(10) / this.count_of_t10y_users );
-    }
-    public int averageFollowersCountFor20YO(){
-        if (this.count_of_t20y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(20) / this.count_of_t20y_users );
-
-    }
-    public int averageFollowersCountFor30YO(){
-        if (this.count_of_t30y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(30) / this.count_of_t30y_users );
-
-    }
-    public int averageFollowersCountFor40YO(){
-        if (this.count_of_t40y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(40) / this.count_of_t40y_users );
-
-    }
-    public int averageFollowersCountFor60YO(){
-        if (this.count_of_t60y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(60) / this.count_of_t60y_users );
-
-    }
-    public int averageFollowersCountFor100YO(){
-        if (this.count_of_t100y_users == 0)
-            return 0;
-        return ( this.age_to_followers_sum.get(100) / this.count_of_t100y_users );
-    }*/
 
     public int[] avg20yo(){
         return Arrays.stream(this.age_to_followers_sum_platform_sum.get(20)).mapToInt(i->i).toArray();

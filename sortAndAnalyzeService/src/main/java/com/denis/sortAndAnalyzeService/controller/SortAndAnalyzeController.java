@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.ExecutorService;
-
 @RestController
 @RequestMapping("/api/sortAnalyze")
 @AllArgsConstructor
@@ -20,7 +18,7 @@ public class SortAndAnalyzeController {
 
     @PostMapping("/{from}/{till}")
     @ResponseStatus(HttpStatus.OK)
-    public String findBots(@PathVariable int from, @PathVariable int till){
+    public String analyzeUsers(@PathVariable int from, @PathVariable int till){
         try {
             return this.analyzeService.UseMultiThreadToAnalyze(from, till);
         } catch (Exception e) {

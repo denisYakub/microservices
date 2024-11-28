@@ -61,8 +61,8 @@ public class PostgresqlService {
     }
 
     @Transactional
-    public List<UserEntity> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserEntity> getUsersFromTo(int startId, int endId){
+        return userRepository.findUsersByIdRange(startId, endId);
     }
 
     @Transactional
@@ -109,7 +109,6 @@ public class PostgresqlService {
 
     @Transactional
     public void deleteUsers(FieldsToDeleteBy fields){
-        //this.careerRepository.;
         this.userRepository.deleteUsersByDynamicFields(fields.getListOfFields());
     }
 }

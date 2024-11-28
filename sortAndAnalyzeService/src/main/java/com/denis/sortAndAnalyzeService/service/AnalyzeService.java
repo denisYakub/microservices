@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,11 +26,13 @@ public class AnalyzeService {
     public final Gson gson;
 
     public final List<Analyze> results = Collections.synchronizedList(new ArrayList<>());
-    public final List<UserEntity> users = GetUsers();
 
-    public String UseMultiThreadToAnalyze(int from, int to) throws InterruptedException {
-        int chunkSize = 1_000;
+    public String UseMultiThreadToAnalyze(int from, int to) throws InterruptedException, ExecutionException {
+        int chunkSize = 999;
         List<int[]> ranges = new ArrayList<>();
+
+        List<Future<Integer>> futures = new ArrayList<>();
+        Integer result = 0;
 
         for(int i = from; i <= to; i+= chunkSize)
             ranges.add(new int[]{i, Math.min(to, ( i + chunkSize - 1 ))});
@@ -39,12 +42,18 @@ public class AnalyzeService {
             int start = range[0];
             int end = range[1];
 
+            futures.add(
             executorService.submit(() ->
                 analyzeUsers(start, end)
-            );
+            ));
         }
-        executorService.awaitTermination(1, TimeUnit.HOURS);
+
+        for (var future: futures)
+            result += future.get();
+
         executorService.shutdown();
+
+        System.out.println("Users total: " + result);
 
         if(!results.isEmpty())
             return analyzeResults();
@@ -150,78 +159,12 @@ public class AnalyzeService {
         return result;
     }
 
-    /*public String analyzeResults(){
-        double average_completeness = 0.0;
-
-        int processed_platforms = 0;
-        int average_android_user = 0;
-        int average_iphone_user = 0;
-        int average_descTop_user = 0;
-
-        int processed_followers = 0;
-        int average_followers_10 = 0;
-        int average_followers_20 = 0;
-        int average_followers_30 = 0;
-        int average_followers_40 = 0;
-        int average_followers_60 = 0;
-        int average_followers_100 = 0;
-
-        int bots = 0;
-        int all_accounts = 0;
-
-        int processed_cities = 0;
-        int migrated = 0;
-
-        int size = results.size();
-        var strResult = new StringBuilder();
-
-        for (var result: results){
-            average_completeness += result.averageCompleteness();
-
-            processed_platforms += result.count_of_processed_platforms;
-            average_android_user += result.averageAgeOfAndroidUser();
-            average_iphone_user += result.averageAgeOfIphoneUser();
-            average_descTop_user += result.averageAgeOfDescTopUser();
-
-            processed_followers += result.count_of_processed_followers;
-            average_followers_10 += result.averageFollowersCountFor10YO();
-            average_followers_20 += result.averageFollowersCountFor20YO();
-            average_followers_30 += result.averageFollowersCountFor30YO();
-            average_followers_40 += result.averageFollowersCountFor40YO();
-            average_followers_60 += result.averageFollowersCountFor60YO();
-            average_followers_100 += result.averageFollowersCountFor100YO();
-
-            bots += result.count_of_deleted_possible_bot_accounts;
-            all_accounts += result.count_of_processed_accounts;
-
-            processed_cities += result.count_of_processed_migration;
-            migrated += result.count_of_migrated_users;
-        }
-
-        strResult.append("\nAverage % of account fields completeness: ").append(( average_completeness / size )).append("\n\n");
-
-        strResult.append("Processed users with android/iphone/descTop: ").append(processed_platforms).append("\n");
-        strResult.append("Average age of android user: ").append(( average_android_user / size )).append("\n");
-        strResult.append("Average age of iphone user: ").append(( average_iphone_user / size )).append("\n");
-        strResult.append("Average age of descTop user: ").append(( average_descTop_user / size )).append("\n\n");
-
-        strResult.append("Processed users with viewable followers: ").append(processed_followers).append("\n");
-        strResult.append("Average number of followers from 10 to 20 years old user: ").append(( average_followers_20 / size )).append("\n");
-        strResult.append("Average number of followers from 20 to 30 years old user: ").append(( average_followers_30 / size )).append("\n");
-        strResult.append("Average number of followers from 30 to 40 years old user: ").append(( average_followers_40 / size )).append("\n");
-        strResult.append("Average number of followers from 40 to 60 years old user: ").append(( average_followers_60 / size )).append("\n");
-        strResult.append("Average number of followers from 60 to 100 years old user: ").append(( average_followers_100 / size )).append("\n\n");
-
-        strResult.append("Possible Bot:").append(bots).append("/Processed:").append(all_accounts).append("\n\n");
-        strResult.append("Migrated:").append(migrated).append("/Processed:").append(processed_cities).append("\n");
-
-        return strResult.toString();
-    }*/
-
-    public void analyzeUsers(int fromId, int toId){
+    public int analyzeUsers(int fromId, int toId){
         int[] ids = getArrayOfIds(fromId, toId);
         var lastSeenAndFollowersCount = GetUserLastSeenCountersFollowersCount(ids);
-        int itrForLastSeenAndFollowers = 0;
+        //UserEntity[] users = this.GetUsersFromTo(fromId, toId);
+
+        int itr = 0;
 
         Analyze analyze = new Analyze();
 
@@ -247,8 +190,8 @@ public class AnalyzeService {
             if(lastSeenAndFollowersCount == null)
                 continue;
 
-            var lastSeenAndFollowersCountOfUser = lastSeenAndFollowersCount.getResponse().get(itrForLastSeenAndFollowers);
-            itrForLastSeenAndFollowers++;
+            var lastSeenAndFollowersCountOfUser = lastSeenAndFollowersCount.getResponse().get(itr);
+            itr++;
 
             int age = user.GetAge();
 
@@ -272,7 +215,8 @@ public class AnalyzeService {
 
         this.results.add(analyze);
         System.out.println(results.size() + " " + analyze.count_of_processed_accounts);
-        //return analyze;
+
+        return analyze.count_of_processed_accounts;
     }
 
     public UserEntity getUserEntityById(int id){
@@ -305,16 +249,22 @@ public class AnalyzeService {
         }
     }
 
-    public List<UserEntity> GetUsers(){
+    public List<UserEntity> GetUsersFromTo(int startId, int endId){
         try {
-            var response = Config.restTemplate().getForEntity(
-                    this.URL_VK_SERVICE,
-                    List.class
+            ResponseEntity<UserEntity[]> response = Config.restTemplate().getForEntity(
+                    this.URL_BD_SERVICE + "/" + startId + "/" + endId,
+                    UserEntity[].class
             );
 
-            return response.getBody();
+            var result = response.getBody();
+
+            if (result != null)
+                return Arrays.asList(result);
+
+            return new ArrayList<>();
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 

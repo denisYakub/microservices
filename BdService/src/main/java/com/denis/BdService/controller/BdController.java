@@ -6,8 +6,10 @@ import com.denis.BdService.service.PostgresqlService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,10 +25,9 @@ public class BdController {
         return this.postgresqlService.getUser(id);
     }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserEntity> getAllUsers(){
-        return this.postgresqlService.getAllUsers();
+    @GetMapping("/{startId}/{endId}")
+    public ResponseEntity<List<UserEntity>> getUsersRange(@PathVariable("startId") int startId, @PathVariable("endId") int endId){
+        return ResponseEntity.ok(this.postgresqlService.getUsersFromTo(startId, endId));
     }
 
     @PostMapping
