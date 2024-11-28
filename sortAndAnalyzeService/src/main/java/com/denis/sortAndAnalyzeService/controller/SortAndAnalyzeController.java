@@ -12,9 +12,19 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class SortAndAnalyzeController {
     @Autowired
-    private SortService sortService;
+    public SortService sortService;
     @Autowired
-    private AnalyzeService analyzeService;
+    public AnalyzeService analyzeService;
+
+    @PostMapping("/{from}/{till}")
+    @ResponseStatus(HttpStatus.OK)
+    public String analyzeUsers(@PathVariable int from, @PathVariable int till){
+        try {
+            return this.analyzeService.UseMultiThreadToAnalyze(from, till);
+        } catch (Exception e) {
+            return "threads error";
+        }
+    }
 
     @DeleteMapping("/cleanUsersWithClosedAcc")
     @ResponseStatus(HttpStatus.OK)

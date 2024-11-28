@@ -1,26 +1,21 @@
-package com.denis.BdService.dto;
-
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+package com.denis.sortAndAnalyzeService.dto;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Table(name = "users")
-@Data
-@Entity
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
-    @Id
-    @Column(unique = true)
     private int id;
 
     private boolean can_access_closed;
     private boolean is_closed;
+
 
     private int relation;
     private int verified;
@@ -33,48 +28,29 @@ public class UserEntity {
     private String first_name;
     private String last_name;
     private String nickname;
+    private String home_town;
     private String maiden_name;
     private String screen_name;
     private String bdate;
-
-    @Column(columnDefinition = "TEXT")
-    private String home_town;
-    @Column(columnDefinition = "TEXT")
     private String university_name;
-    @Column(columnDefinition = "TEXT")
     private String faculty_name;
-    @Column(columnDefinition = "TEXT")
+
     private String about;
-    @Column(columnDefinition = "TEXT")
     private String activities;
-    @Column(columnDefinition = "TEXT")
     private String books;
-    @Column(columnDefinition = "TEXT")
     private String site;
-    @Column(columnDefinition = "TEXT")
     private String movies;
-    @Column(columnDefinition = "TEXT")
     private String music;
-    @Column(columnDefinition = "TEXT")
     private String games;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    @Nullable
     private CityEntity city;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "occupation_id", referencedColumnName = "id")
     private OccupationEntity occupation;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<CareerEntity> career;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<RelativeEntity> relatives;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "personal_id", referencedColumnName = "id")
     private PersonalEntity personal;
 
     @Override
@@ -83,7 +59,7 @@ public class UserEntity {
                 "\"id\":" + "\"" + id + "\"" +
                 ", \"nickname\":" + "\"" + nickname + "\"" +
                 ", \"bdate\":" + "\"" + bdate + "\"" +
-                ", \"city\":" + (city != null ? city.toString() : "null") +
+                ", \"city\":" + city +
                 ", \"has_photo\":" + "\"" + has_photo + "\"" +
                 ", \"books\":" + "\"" + books + "\"" +
                 ", \"about\":" + "\"" + about + "\"" +
@@ -92,8 +68,8 @@ public class UserEntity {
                 ", \"activities\":" + "\"" + activities + "\"" +
                 ", \"music\":" + "\"" + music + "\"" +
                 ", \"site\":" + "\"" + site + "\"" +
-                ", \"occupation\":" + (occupation != null ? occupation.toString() : "null") +
-                ", \"career\":" + (career != null ? career.toString() : "null") +
+                ", \"occupation\":" + occupation +
+                ", \"career\":" + career +
                 ", \"university\":" + "\"" + university + "\"" +
                 ", \"university_name\":" + "\"" + university_name + "\"" +
                 ", \"faculty\":" + "\"" + faculty + "\"" +
@@ -101,8 +77,8 @@ public class UserEntity {
                 ", \"graduation\":" + "\"" + graduation + "\"" +
                 ", \"home_town\":" + "\"" + home_town + "\"" +
                 ", \"relation\":" + "\"" + relation + "\"" +
-                ", \"personal\":"+ (personal != null ? personal.toString() : "null") +
-                ", \"relatives\":" + (relatives != null ? relatives.toString() : "null") +
+                ", \"personal\":"+ personal +
+                ", \"relatives\":" + relatives +
                 ", \"sex\":" + "\"" + sex + "\"" +
                 ", \"screen_name\":" + "\"" + screen_name + "\"" +
                 ", \"verified\":" + "\"" + verified + "\"" +
@@ -131,6 +107,16 @@ public class UserEntity {
 
     public boolean relativeIsNull(){
         return this.relatives == null;
+    }
+
+    public int GetAge(){
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.M.yyyy");
+
+            return (2024 - LocalDate.parse(this.bdate, formatter).getYear());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     public static String[] getListOfStringFields(){

@@ -42,6 +42,30 @@ public class PostgresqlService {
     }
 
     @Transactional
+    public String getUser(int id){
+        String result;
+        try {
+            var user = userRepository.findById(id);
+
+            if(user.isEmpty())
+                return null;
+
+            result = user.get().toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error with id - " + id + ":" + e.getMessage());
+            return null;
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public List<UserEntity> getUsersFromTo(int startId, int endId){
+        return userRepository.findUsersByIdRange(startId, endId);
+    }
+
+    @Transactional
     public void saveListOfUsers(List<UserEntity> users) throws DataAccessException {
         //TODO оптимизировать
         for (UserEntity user : users) {
@@ -85,7 +109,6 @@ public class PostgresqlService {
 
     @Transactional
     public void deleteUsers(FieldsToDeleteBy fields){
-        //this.careerRepository.;
         this.userRepository.deleteUsersByDynamicFields(fields.getListOfFields());
     }
 }

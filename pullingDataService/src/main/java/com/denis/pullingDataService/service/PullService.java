@@ -4,6 +4,7 @@ import com.denis.pullingDataService.configuration.Config;
 import com.denis.pullingDataService.dto.vkUsersRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,8 +49,11 @@ public class PullService {
             int idTo = Math.min(i + this.CHUNK_SIZE - 1, toId);
             executorService.submit(() -> {
                 var response = this.pullUsersFromVkService(IdFrom, idTo);
-                Config.restTemplate()
-                        .postForEntity(this.URL_KAFKA_SERVICE + "/bdInsertMessageBroker", response, Void.class);
+                this.postRequest(
+                        this.URL_KAFKA_SERVICE + "/bdInsertMessageBroker",
+                            response,
+                            Void.class
+                        );
             });
         }
 
@@ -59,9 +63,11 @@ public class PullService {
     public String pullUsersFromVkService(int fromId, int toId) {
         int[] ids = this.getArrayOfIds(fromId, toId);
 
-        return Config.restTemplate()
-                .postForEntity(this.URL_VK_SERVICE, new vkUsersRequest(ids, this.FIELDS_OF_USER_TO_GET), String.class)
-                .getBody();
+        return this.postRequest(
+                this.URL_VK_SERVICE,
+                new vkUsersRequest(ids, this.FIELDS_OF_USER_TO_GET),
+                String.class
+        ).getBody().toString();
     }
 
     public int[] getArrayOfIds(int firstId, int lastId){
@@ -74,5 +80,13 @@ public class PullService {
         }
 
         return ids;
+    }
+
+    public <T>ResponseEntity postRequest(String url, Object body,  Class<T> responseType){
+        return Config.restTemplate().postForEntity(
+                url,
+                body,
+                responseType
+        );
     }
 }

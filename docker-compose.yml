@@ -1,6 +1,7 @@
 version: '3'
 services:
   bd-service:
+    image: deniso4ka/bd-service:1.0
     build:
       context: ./BdService
       dockerfile: Dockerfile
@@ -20,6 +21,7 @@ services:
       - postgres
 
   kafka-service:
+    image: deniso4ka/kafka-service:1.0
     build:
       context: ./KafkaService
       dockerfile: Dockerfile
@@ -35,6 +37,7 @@ services:
       - kafka
 
   pulling-data-service:
+    image: deniso4ka/pulling-data-service:1.0
     build:
       context: ./pullingDataService
       dockerfile: Dockerfile
@@ -50,6 +53,7 @@ services:
       - services-network
 
   sort-and-analyze-service:
+    image: deniso4ka/sort-and-analyze-service:1.0
     build:
       context: ./sortAndAnalyzeService
       dockerfile: Dockerfile
@@ -62,6 +66,7 @@ services:
       - services-network
 
   vk-service:
+    image: deniso4ka/vk-service:1.0
     build:
       context: ./vkService
       dockerfile: Dockerfile
@@ -69,7 +74,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      ACCESS_TOKEN_SOURCE: "vk1.a.h9-vykgbCIMpQKzIconTB8XJkiJRXBR99Kc_N3ZR8IGhN46X6p-uZGFDD-VGYt8dlbM-Ot1AihXsTlD6XiWrAkeDX7uSbet1GekTRXoJbLntCPmABCeYhwqtHFveySeepQ39A7Hc1pgJrmtp7_-Sz87eIjnZfNif6Y9yLnj9AEpIAg_8pW0wib4lJTQdIjSh"
+      ACCESS_TOKEN_SOURCE: "vk1.a.NJ2K2wfxRvy1dgdF1Xq593N7USPpZW5ghkH_YfFcdujscpVstieclYvGNOzahuPr5Z4OVO6YrErW4aGh5LkrHzN-jxDrjFkHjYo-XoTOY3ayjXtm99UCaXnSx7IFkyuHnfZtXXI_yROzBDghZLzYDCdNiobCpUvKgkNCspJz34IeyzR7fMRjqtfipQLq6GYI"
     networks:
       - services-network
 
@@ -100,6 +105,8 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
     networks:
       - services-network
+    volumes:
+      - 'E:/pet-projects/kafka-container-data:/var/lib/kafka/data'
 
   postgres:
     image: 'postgres:16'
@@ -112,6 +119,8 @@ services:
       POSTGRES_DB: "BigData"
     networks:
       - services-network
+    volumes:
+      - 'E:/pet-projects/postgres-container-data:/var/lib/postgresql/data'
 
 networks:
   services-network:
