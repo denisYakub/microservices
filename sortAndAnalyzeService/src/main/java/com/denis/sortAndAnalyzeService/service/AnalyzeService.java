@@ -115,7 +115,7 @@ public class AnalyzeService {
                 .append("Android-").append(age20_users_followers_platforms[1])
                 .append("Iphone-").append(age20_users_followers_platforms[2])
                 .append("DescTop-").append(age20_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age20_users_followers_platforms[4] / (100 * age20_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age20_users_followers_platforms[5] == 0 ? 0.0 : age20_users_followers_platforms[4] / (100 * age20_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage30_users_followers_platforms: ")
@@ -123,7 +123,7 @@ public class AnalyzeService {
                 .append("Android-").append(age30_users_followers_platforms[1])
                 .append("Iphone-").append(age30_users_followers_platforms[2])
                 .append("DescTop-").append(age30_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age30_users_followers_platforms[4] / (100 * age30_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age30_users_followers_platforms[5] == 0 ? 0.0 : age30_users_followers_platforms[4] / (100 * age30_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage40_users_followers_platforms: ")
@@ -131,7 +131,7 @@ public class AnalyzeService {
                 .append("Android-").append(age40_users_followers_platforms[1])
                 .append("Iphone-").append(age40_users_followers_platforms[2])
                 .append("DescTop-").append(age40_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age40_users_followers_platforms[4] / (100 * age40_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age40_users_followers_platforms[5] == 0 ? 0.0 : age40_users_followers_platforms[4] / (100 * age40_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage50_users_followers_platforms: ")
@@ -139,7 +139,7 @@ public class AnalyzeService {
                 .append(" Android-").append(age50_users_followers_platforms[1])
                 .append(" Iphone-").append(age50_users_followers_platforms[2])
                 .append(" DescTop-").append(age50_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age50_users_followers_platforms[4] / (100 * age50_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age50_users_followers_platforms[5] == 0 ? 0.0 : age50_users_followers_platforms[4] / (100 * age50_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage60_users_followers_platforms: ")
@@ -147,7 +147,7 @@ public class AnalyzeService {
                 .append(" Android-").append(age60_users_followers_platforms[1])
                 .append(" Iphone-").append(age60_users_followers_platforms[2])
                 .append(" DescTop-").append(age60_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age60_users_followers_platforms[4] / (100 * age60_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age60_users_followers_platforms[5] == 0 ? 0.0 : age60_users_followers_platforms[4] / (100 * age60_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage70_users_followers_platforms: ")
@@ -155,7 +155,7 @@ public class AnalyzeService {
                 .append(" Android-").append(age70_users_followers_platforms[1])
                 .append(" Iphone-").append(age70_users_followers_platforms[2])
                 .append(" DescTop-").append(age70_users_followers_platforms[3])
-                .append("Agerage_Completeness-").append(age70_users_followers_platforms[4] / (100 * age70_users_followers_platforms[5]))
+                .append("Agerage_Completeness-").append(age70_users_followers_platforms[5] == 0 ? 0.0 : age70_users_followers_platforms[4] / (100 * age70_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\ncount_of_migrated_users: ").append(count_of_migrated_users).append("\n");
