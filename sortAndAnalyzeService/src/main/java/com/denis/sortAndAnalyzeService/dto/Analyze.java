@@ -31,19 +31,30 @@ public class Analyze {
 
     public Analyze(){
 
-        age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(30, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(40, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(50, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(60, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(70, new Integer[]{0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(30, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(40, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(50, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(60, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(70, new Integer[]{0, 0, 0, 0, 0, 0});
     }
 
     public void addDeletedOrBot(int id){
         this.count_of_deleted_possible_bot_accounts++;
     }
 
-    public void increaseCompleteness(double completeness){
+    public void increaseCompleteness(double completeness, int age){
+        int _age = this.getAge(age);
+        if (_age == 0) {
+            return;
+        }
+        var val = this.age_to_followers_sum_platform_sum.get(_age);
+        val[4] += (int)(completeness * 100);
+        val[5]++;
+        this.age_to_followers_sum_platform_sum.put(
+                _age,
+                val
+        );
         this.sum_of_completeness_accounts += completeness;
         this.count_of_accounts_for_completeness++;
     }
