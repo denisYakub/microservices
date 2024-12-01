@@ -73,11 +73,12 @@ public class AnalyzeService {
         int count_of_migrated_users = 0;
         int count_of_processed_migration = 0;
 
-        int[] age20_users_followers_platforms = new int[4];
-        int[] age30_users_followers_platforms = new int[4];
-        int[] age40_users_followers_platforms = new int[4];
-        int[] age60_users_followers_platforms = new int[4];
-        int[] age100_users_followers_platforms = new int[4];
+        int[] age20_users_followers_platforms = new int[6];
+        int[] age30_users_followers_platforms = new int[6];
+        int[] age40_users_followers_platforms = new int[6];
+        int[] age50_users_followers_platforms = new int[6];
+        int[] age60_users_followers_platforms = new int[6];
+        int[] age70_users_followers_platforms = new int[6];
 
         var strResult = new StringBuilder();
         int size = results.size();
@@ -97,8 +98,9 @@ public class AnalyzeService {
             age20_users_followers_platforms = increaseArr(age20_users_followers_platforms, result.avg20yo());
             age30_users_followers_platforms = increaseArr(age30_users_followers_platforms, result.avg30yo());
             age40_users_followers_platforms = increaseArr(age40_users_followers_platforms, result.avg40yo());
+            age60_users_followers_platforms = increaseArr(age50_users_followers_platforms, result.avg50yo());
             age60_users_followers_platforms = increaseArr(age60_users_followers_platforms, result.avg60yo());
-            age100_users_followers_platforms = increaseArr(age100_users_followers_platforms, result.avg100yo());
+            age60_users_followers_platforms = increaseArr(age70_users_followers_platforms, result.avg70yo());
         }
         strResult.append("\navg_of_completeness_accounts: ").append(( avg_of_completeness_accounts / size )).append("\n");
 
@@ -113,6 +115,7 @@ public class AnalyzeService {
                 .append("Android-").append(age20_users_followers_platforms[1])
                 .append("Iphone-").append(age20_users_followers_platforms[2])
                 .append("DescTop-").append(age20_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age20_users_followers_platforms[5] == 0 ? 0.0 : age20_users_followers_platforms[4] / (100 * age20_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage30_users_followers_platforms: ")
@@ -120,6 +123,7 @@ public class AnalyzeService {
                 .append("Android-").append(age30_users_followers_platforms[1])
                 .append("Iphone-").append(age30_users_followers_platforms[2])
                 .append("DescTop-").append(age30_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age30_users_followers_platforms[5] == 0 ? 0.0 : age30_users_followers_platforms[4] / (100 * age30_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage40_users_followers_platforms: ")
@@ -127,6 +131,15 @@ public class AnalyzeService {
                 .append("Android-").append(age40_users_followers_platforms[1])
                 .append("Iphone-").append(age40_users_followers_platforms[2])
                 .append("DescTop-").append(age40_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age40_users_followers_platforms[5] == 0 ? 0.0 : age40_users_followers_platforms[4] / (100 * age40_users_followers_platforms[5]))
+                .append("\n");
+
+        strResult.append("\nage50_users_followers_platforms: ")
+                .append("Followers-").append(age50_users_followers_platforms[0])
+                .append(" Android-").append(age50_users_followers_platforms[1])
+                .append(" Iphone-").append(age50_users_followers_platforms[2])
+                .append(" DescTop-").append(age50_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age50_users_followers_platforms[5] == 0 ? 0.0 : age50_users_followers_platforms[4] / (100 * age50_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\nage60_users_followers_platforms: ")
@@ -134,13 +147,15 @@ public class AnalyzeService {
                 .append(" Android-").append(age60_users_followers_platforms[1])
                 .append(" Iphone-").append(age60_users_followers_platforms[2])
                 .append(" DescTop-").append(age60_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age60_users_followers_platforms[5] == 0 ? 0.0 : age60_users_followers_platforms[4] / (100 * age60_users_followers_platforms[5]))
                 .append("\n");
 
-        strResult.append("\nage100_users_followers_platforms: ")
-                .append("Followers-").append(age100_users_followers_platforms[0])
-                .append(" Android-").append(age100_users_followers_platforms[1])
-                .append(" Iphone-").append(age100_users_followers_platforms[2])
-                .append(" DescTop-").append(age100_users_followers_platforms[3])
+        strResult.append("\nage70_users_followers_platforms: ")
+                .append("Followers-").append(age70_users_followers_platforms[0])
+                .append(" Android-").append(age70_users_followers_platforms[1])
+                .append(" Iphone-").append(age70_users_followers_platforms[2])
+                .append(" DescTop-").append(age70_users_followers_platforms[3])
+                .append("Agerage_Completeness-").append(age70_users_followers_platforms[5] == 0 ? 0.0 : age70_users_followers_platforms[4] / (100 * age70_users_followers_platforms[5]))
                 .append("\n");
 
         strResult.append("\ncount_of_migrated_users: ").append(count_of_migrated_users).append("\n");
@@ -185,15 +200,15 @@ public class AnalyzeService {
             if(!user.getHome_town().isEmpty() && user.getCity() != null)
                 analyze.increaseIfMigrated(user.getHome_town(), user.getCity().title);
 
-            analyze.increaseCompleteness(accOccupancyPercentage);
+            int age = user.GetAge();
+
+            analyze.increaseCompleteness(accOccupancyPercentage, age);
 
             if(lastSeenAndFollowersCount == null)
                 continue;
 
             var lastSeenAndFollowersCountOfUser = lastSeenAndFollowersCount.getResponse().get(itr);
             itr++;
-
-            int age = user.GetAge();
 
             if(lastSeenAndFollowersCountOfUser == null || age == -1)
                 continue;

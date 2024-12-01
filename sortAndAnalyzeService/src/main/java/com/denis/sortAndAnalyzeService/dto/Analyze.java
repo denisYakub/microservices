@@ -31,25 +31,39 @@ public class Analyze {
 
     public Analyze(){
 
-        age_to_followers_sum_platform_sum.put(10, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(30, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(40, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(60, new Integer[]{0, 0, 0, 0});
-        age_to_followers_sum_platform_sum.put(100,new Integer[]{0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(30, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(40, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(50, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(60, new Integer[]{0, 0, 0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(70, new Integer[]{0, 0, 0, 0, 0, 0});
     }
 
     public void addDeletedOrBot(int id){
         this.count_of_deleted_possible_bot_accounts++;
     }
 
-    public void increaseCompleteness(double completeness){
+    public void increaseCompleteness(double completeness, int age){
+        int _age = this.getAge(age);
+        if (_age == 0) {
+            return;
+        }
+        var val = this.age_to_followers_sum_platform_sum.get(_age);
+        val[4] += (int)(completeness * 100);
+        val[5]++;
+        this.age_to_followers_sum_platform_sum.put(
+                _age,
+                val
+        );
         this.sum_of_completeness_accounts += completeness;
         this.count_of_accounts_for_completeness++;
     }
 
     public void increasePlatform(int platform, int age){
-        int _age = (age <= 20 ? 20 : age <= 30 ? 30 : age <= 40 ? 40 : age <= 60 ? 60 : 100);
+        int _age = this.getAge(age);
+        if (_age == 0) {
+            return;
+        }
         var val = this.age_to_followers_sum_platform_sum.get(_age);
 
         if(platform == platforms.android.id){
@@ -69,51 +83,16 @@ public class Analyze {
     }
 
     public void increaseFollowers(int age, int followers){
-        if(age <= 10){
-            var val = this.age_to_followers_sum_platform_sum.get(10);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    10,
-                    val
-            );
-        } else if(age <= 20){
-            var val = this.age_to_followers_sum_platform_sum.get(20);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    20,
-                    val
-            );
-        } else if(age <= 30){
-            var val = this.age_to_followers_sum_platform_sum.get(30);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    30,
-                    val
-            );
-        } else if(age <= 40){
-            var val = this.age_to_followers_sum_platform_sum.get(40);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    40,
-                    val
-            );
-        } else if(age <= 60){
-            var val = this.age_to_followers_sum_platform_sum.get(60);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    60,
-                    val
-            );
-        } else if(age <= 100){
-            var val = this.age_to_followers_sum_platform_sum.get(100);
-            val[0]++;
-            this.age_to_followers_sum_platform_sum.put(
-                    100,
-                    val
-            );
-        } else {
+        int _age = this.getAge(age);
+        if (_age == 0) {
             return;
         }
+        var val = this.age_to_followers_sum_platform_sum.get(_age);
+        val[0]++;
+        this.age_to_followers_sum_platform_sum.put(
+                _age,
+                val
+        );
         this.count_of_processed_followers++;
     }
 
@@ -121,6 +100,23 @@ public class Analyze {
         if (this.count_of_accounts_for_completeness == 0)
             return 0;
         return ( this.sum_of_completeness_accounts / this.count_of_accounts_for_completeness );
+    }
+
+    public int getAge(int age){
+        if (age >= 20 and age < 30){
+            return 20;
+        } else if (age >= 30 and age < 40){
+            return 30;
+        } else if (age >= 40 and age < 50){
+            return 40;
+        } else if (age >= 50 and age < 60){
+            return 50;
+        } else if (age >= 60 and age < 70){
+            return 60
+        } else if (age >= 70 and age < 80){
+            return 70;
+        }
+        return 0;
     }
 
     public int[] avg20yo(){
@@ -132,11 +128,14 @@ public class Analyze {
     public int[] avg40yo(){
         return Arrays.stream(this.age_to_followers_sum_platform_sum.get(40)).mapToInt(i->i).toArray();
     }
+    public int[] avg50yo(){
+        return Arrays.stream(this.age_to_followers_sum_platform_sum.get(50)).mapToInt(i->i).toArray();
+    }
     public int[] avg60yo(){
         return Arrays.stream(this.age_to_followers_sum_platform_sum.get(60)).mapToInt(i->i).toArray();
     }
-    public int[] avg100yo(){
-        return Arrays.stream(this.age_to_followers_sum_platform_sum.get(100)).mapToInt(i->i).toArray();
+    public int[] avg70yo(){
+        return Arrays.stream(this.age_to_followers_sum_platform_sum.get(70)).mapToInt(i->i).toArray();
     }
     public void increaseIfMigrated(String home_town, String current_city){
         this.count_of_processed_migration++;
