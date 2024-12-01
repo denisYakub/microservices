@@ -34,6 +34,7 @@ public class Analyze {
         age_to_followers_sum_platform_sum.put(20, new Integer[]{0, 0, 0, 0});
         age_to_followers_sum_platform_sum.put(30, new Integer[]{0, 0, 0, 0});
         age_to_followers_sum_platform_sum.put(40, new Integer[]{0, 0, 0, 0});
+        age_to_followers_sum_platform_sum.put(50, new Integer[]{0, 0, 0, 0});
         age_to_followers_sum_platform_sum.put(60, new Integer[]{0, 0, 0, 0});
         age_to_followers_sum_platform_sum.put(70, new Integer[]{0, 0, 0, 0});
     }
