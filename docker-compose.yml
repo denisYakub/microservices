@@ -1,10 +1,7 @@
 version: '3'
 services:
   bd-service:
-    image: deniso4ka/bd-service:1.0
-    build:
-      context: ./BdService
-      dockerfile: Dockerfile
+    image: 'deniso4ka/bd-service:1.1'
     container_name: bd-service-container
     ports:
       - "8081:8081"
@@ -21,10 +18,7 @@ services:
       - postgres
 
   kafka-service:
-    image: deniso4ka/kafka-service:1.0
-    build:
-      context: ./KafkaService
-      dockerfile: Dockerfile
+    image: 'deniso4ka/kafka-service:1.1'
     container_name: kafka-service-container
     ports:
       - "8083:8083"
@@ -37,10 +31,7 @@ services:
       - kafka
 
   pulling-data-service:
-    image: deniso4ka/pulling-data-service:1.0
-    build:
-      context: ./pullingDataService
-      dockerfile: Dockerfile
+    image: 'deniso4ka/pulling-data-service:1.1'
     container_name: pulling-data-service-container
     ports:
       - "8082:8082"
@@ -53,10 +44,7 @@ services:
       - services-network
 
   sort-and-analyze-service:
-    image: deniso4ka/sort-and-analyze-service:1.0
-    build:
-      context: ./sortAndAnalyzeService
-      dockerfile: Dockerfile
+    image: 'deniso4ka/sort-and-analyze-service:1.1'
     container_name: sort-and-analyze-service-container
     ports:
       - "8084:8084"
@@ -66,15 +54,12 @@ services:
       - services-network
 
   vk-service:
-    image: deniso4ka/vk-service:1.0
-    build:
-      context: ./vkService
-      dockerfile: Dockerfile
+    image: 'deniso4ka/vk-service:1.1'
     container_name: vk-service-container
     ports:
       - "8080:8080"
     environment:
-      ACCESS_TOKEN_SOURCE: "vk1.a.NJ2K2wfxRvy1dgdF1Xq593N7USPpZW5ghkH_YfFcdujscpVstieclYvGNOzahuPr5Z4OVO6YrErW4aGh5LkrHzN-jxDrjFkHjYo-XoTOY3ayjXtm99UCaXnSx7IFkyuHnfZtXXI_yROzBDghZLzYDCdNiobCpUvKgkNCspJz34IeyzR7fMRjqtfipQLq6GYI"
+      ACCESS_TOKEN_SOURCE: "vk1.a.Hz8NgssyXIMd4UPachPX8aviRXZ0qALLT1U2wzOAVjnWqEN92qJZfp3e7Gz_Q8k5EkLvzFZuUIrdDtPDRe238NdBrsbMG1PL1P5weTdRgC1dZS0BYX88p8gBGT1sBlUg3PGIhEfAJnz6Jb5xwo2LHwijcpYny5rxeDiulFIQ37JTAJgEABqmiozuvfuRRi5n"
     networks:
       - services-network
 
@@ -112,7 +97,7 @@ services:
     image: 'postgres:16'
     container_name: postgres-container
     ports:
-      - "5432:5432"
+      - "5433:5433"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "denis"
