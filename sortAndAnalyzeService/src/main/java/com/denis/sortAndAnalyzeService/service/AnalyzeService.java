@@ -76,8 +76,9 @@ public class AnalyzeService {
         int[] age20_users_followers_platforms = new int[4];
         int[] age30_users_followers_platforms = new int[4];
         int[] age40_users_followers_platforms = new int[4];
+        int[] age50_users_followers_platforms = new int[4];
         int[] age60_users_followers_platforms = new int[4];
-        int[] age100_users_followers_platforms = new int[4];
+        int[] age70_users_followers_platforms = new int[4];
 
         var strResult = new StringBuilder();
         int size = results.size();
@@ -97,8 +98,9 @@ public class AnalyzeService {
             age20_users_followers_platforms = increaseArr(age20_users_followers_platforms, result.avg20yo());
             age30_users_followers_platforms = increaseArr(age30_users_followers_platforms, result.avg30yo());
             age40_users_followers_platforms = increaseArr(age40_users_followers_platforms, result.avg40yo());
+            age60_users_followers_platforms = increaseArr(age50_users_followers_platforms, result.avg50yo());
             age60_users_followers_platforms = increaseArr(age60_users_followers_platforms, result.avg60yo());
-            age100_users_followers_platforms = increaseArr(age100_users_followers_platforms, result.avg100yo());
+            age60_users_followers_platforms = increaseArr(age70_users_followers_platforms, result.avg70yo());
         }
         strResult.append("\navg_of_completeness_accounts: ").append(( avg_of_completeness_accounts / size )).append("\n");
 
@@ -129,6 +131,13 @@ public class AnalyzeService {
                 .append("DescTop-").append(age40_users_followers_platforms[3])
                 .append("\n");
 
+        strResult.append("\nage50_users_followers_platforms: ")
+                .append("Followers-").append(age50_users_followers_platforms[0])
+                .append(" Android-").append(age50_users_followers_platforms[1])
+                .append(" Iphone-").append(age50_users_followers_platforms[2])
+                .append(" DescTop-").append(age50_users_followers_platforms[3])
+                .append("\n");
+
         strResult.append("\nage60_users_followers_platforms: ")
                 .append("Followers-").append(age60_users_followers_platforms[0])
                 .append(" Android-").append(age60_users_followers_platforms[1])
@@ -136,11 +145,11 @@ public class AnalyzeService {
                 .append(" DescTop-").append(age60_users_followers_platforms[3])
                 .append("\n");
 
-        strResult.append("\nage100_users_followers_platforms: ")
-                .append("Followers-").append(age100_users_followers_platforms[0])
-                .append(" Android-").append(age100_users_followers_platforms[1])
-                .append(" Iphone-").append(age100_users_followers_platforms[2])
-                .append(" DescTop-").append(age100_users_followers_platforms[3])
+        strResult.append("\nage70_users_followers_platforms: ")
+                .append("Followers-").append(age70_users_followers_platforms[0])
+                .append(" Android-").append(age70_users_followers_platforms[1])
+                .append(" Iphone-").append(age70_users_followers_platforms[2])
+                .append(" DescTop-").append(age70_users_followers_platforms[3])
                 .append("\n");
 
         strResult.append("\ncount_of_migrated_users: ").append(count_of_migrated_users).append("\n");
