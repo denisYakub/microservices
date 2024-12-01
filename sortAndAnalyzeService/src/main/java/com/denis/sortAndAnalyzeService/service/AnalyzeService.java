@@ -73,12 +73,12 @@ public class AnalyzeService {
         int count_of_migrated_users = 0;
         int count_of_processed_migration = 0;
 
-        int[] age20_users_followers_platforms = new int[4];
-        int[] age30_users_followers_platforms = new int[4];
-        int[] age40_users_followers_platforms = new int[4];
-        int[] age50_users_followers_platforms = new int[4];
-        int[] age60_users_followers_platforms = new int[4];
-        int[] age70_users_followers_platforms = new int[4];
+        int[] age20_users_followers_platforms = new int[6];
+        int[] age30_users_followers_platforms = new int[6];
+        int[] age40_users_followers_platforms = new int[6];
+        int[] age50_users_followers_platforms = new int[6];
+        int[] age60_users_followers_platforms = new int[6];
+        int[] age70_users_followers_platforms = new int[6];
 
         var strResult = new StringBuilder();
         int size = results.size();
