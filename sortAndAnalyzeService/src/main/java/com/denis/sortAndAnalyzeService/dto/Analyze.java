@@ -103,17 +103,17 @@ public class Analyze {
     }
 
     public int getAge(int age){
-        if (age >= 20 and age < 30){
+        if (age >= 20 && age < 30){
             return 20;
-        } else if (age >= 30 and age < 40){
+        } else if (age >= 30 && age < 40){
             return 30;
-        } else if (age >= 40 and age < 50){
+        } else if (age >= 40 && age < 50){
             return 40;
-        } else if (age >= 50 and age < 60){
+        } else if (age >= 50 && age < 60){
             return 50;
-        } else if (age >= 60 and age < 70){
-            return 60
-        } else if (age >= 70 and age < 80){
+        } else if (age >= 60 && age < 70){
+            return 60;
+        } else if (age >= 70 && age < 80){
             return 70;
         }
         return 0;
