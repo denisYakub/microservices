@@ -70,7 +70,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      ACCESS_TOKEN_SOURCE: "vk1.a.rFYp8U8CduqMdM5bgzd4dArlVLL0vc9QnW6gUGIHMqesYy3kFOuFLdIPPRb6uA_G53DuXHwIit09pHpEgtErc-CUqO8bzHngjax8a7NW_cK9txipCzAusutuea9xdE2US2rtogHlYyBYdZAsBhpUYLo-wuhXPOuZk-bXWbPNh33sYHHtuJgKEreX7FWIJ-1A"
+      ACCESS_TOKEN_SOURCE: "vk1.a.v1nI2u_y0BfjAPEpU6JXSAEwW-G9QJuNyOdjZXdgg5S8fauBVNS5Pv5ERfW6IO-15kaQVpwSN0uHcKZQFSaj8rB8BvtO70PsU57UTZwscW-0ygmOvpSc7xtiHvGPxVzjs9SH9WBk7h30VjJ9Yd_rbIV3GShms8yspsPyPdgbEE92K5ofCiLMu1fQ8eK52A-e"
     networks:
       - services-network
 
