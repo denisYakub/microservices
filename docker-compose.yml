@@ -1,7 +1,10 @@
 version: '3'
 services:
   bd-service:
-    image: 'deniso4ka/bd-service:1.1'
+    image: 'deniso4ka/bd-service:1.2'
+    build:
+      context: ./BdService
+      dockerfile: Dockerfile
     container_name: bd-service-container
     ports:
       - "8081:8081"
@@ -11,7 +14,7 @@ services:
       DB_NAME_SOURCE: "BigData"
       DB_USER_NAME_SOURCE: "postgres"
       DB_PASSWORD_SOURCE: "denis"
-      NUMBER_OF_THREADS_SOURCE: 8
+      NUMBER_OF_THREADS_SOURCE: 16
     networks:
       - services-network
     depends_on:
@@ -36,30 +39,38 @@ services:
     ports:
       - "8082:8082"
     environment:
-      NUMBER_OF_THREADS_SOURCE: "8"
-      CHUNK_SIZE_SOURCE: "1000"
+      NUMBER_OF_THREADS_SOURCE: 8
+      CHUNK_SIZE_SOURCE: 1000
       URL_VK_SERVICE_SOURCE: "http://vk-service:8080"
       URL_KAFKA_SERVICE_SOURCE: "http://kafka-service:8083"
     networks:
       - services-network
 
   sort-and-analyze-service:
-    image: 'deniso4ka/sort-and-analyze-service:1.1'
+    image: 'deniso4ka/sort-and-analyze-service:1.2'
+    build:
+      context: ./sortAndAnalyzeService
+      dockerfile: Dockerfile
     container_name: sort-and-analyze-service-container
     ports:
       - "8084:8084"
     environment:
       URL_BD_SERVICE_SOURCE: "http://bd-service:8081"
+      URL_VK_SERVICE_SOURCE: "http://vk-service:8080"
+      NUMBER_OF_THREADS_SOURCE: 8
     networks:
       - services-network
 
   vk-service:
-    image: 'deniso4ka/vk-service:1.1'
+    image: 'deniso4ka/vk-service:1.2'
+    build:
+      context: ./vkService
+      dockerfile: Dockerfile
     container_name: vk-service-container
     ports:
       - "8080:8080"
     environment:
-      ACCESS_TOKEN_SOURCE: "vk1.a.Hz8NgssyXIMd4UPachPX8aviRXZ0qALLT1U2wzOAVjnWqEN92qJZfp3e7Gz_Q8k5EkLvzFZuUIrdDtPDRe238NdBrsbMG1PL1P5weTdRgC1dZS0BYX88p8gBGT1sBlUg3PGIhEfAJnz6Jb5xwo2LHwijcpYny5rxeDiulFIQ37JTAJgEABqmiozuvfuRRi5n"
+      ACCESS_TOKEN_SOURCE: "vk1.a.v1nI2u_y0BfjAPEpU6JXSAEwW-G9QJuNyOdjZXdgg5S8fauBVNS5Pv5ERfW6IO-15kaQVpwSN0uHcKZQFSaj8rB8BvtO70PsU57UTZwscW-0ygmOvpSc7xtiHvGPxVzjs9SH9WBk7h30VjJ9Yd_rbIV3GShms8yspsPyPdgbEE92K5ofCiLMu1fQ8eK52A-e"
     networks:
       - services-network
 
